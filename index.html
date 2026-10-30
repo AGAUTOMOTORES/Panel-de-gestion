@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Acceso Privado | Taller Angelelli</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              500: '#ff2a2a',
+              600: '#e60000',
+              700: '#b30000',
+              glow: 'rgba(255, 42, 42, 0.35)'
+            },
+            dark: {
+              950: '#07090e',
+              900: '#0f131c',
+              850: '#151b27',
+              800: '#1d2434',
+              700: '#2c364d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, ::before, ::after { box-sizing: border-box; }
+    html, body {
+      background-color: #07090e;
+      color: #f1f5f9;
+      overflow-x: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    #cursor-light {
+      pointer-events: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 42, 42, 0.12) 0%, rgba(255, 42, 42, 0.03) 40%, transparent 70%);
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      transition: width 0.3s, height 0.3s;
+    }
+
+    .glass-card {
+      background: linear-gradient(135deg, rgba(21, 27, 39, 0.85) 0%, rgba(15, 19, 28, 0.95) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .glass-card:hover {
+      border-color: rgba(255, 42, 42, 0.6);
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 30px 60px -15px rgba(255, 42, 42, 0.35), 0 0 25px rgba(255, 42, 42, 0.15);
+      z-index: 10;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #07090e; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #1d2434; border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #ff2a2a; }
+
+    .patent-badge-arg {
+      font-family: 'Space Grotesk', monospace;
+      letter-spacing: 0.15em;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+
+    @media print {
+      body * { visibility: hidden; }
+      #modal-detalle-auto, #modal-detalle-auto * { visibility: visible; }
+      #modal-detalle-auto { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: white; color: black; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="selection:bg-brand-500 selection:text-white min-h-screen flex flex-col font-sans antialiased relative">
+
+  <div id="cursor-light"></div>
+
+  <!-- PANTALLA DE ACCESO / CONTRASEÑA -->
+  <div id="pantalla-login" class="fixed inset-0 z-50 bg-dark-950/90 backdrop-blur-xl flex items-center justify-center p-4">
+    <div class="glass-card p-8 rounded-3xl max-w-md w-full border border-white/10 shadow-2xl text-center relative overflow-hidden">
+      
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white mx-auto mb-5 shadow-lg shadow-brand-500/30">
+        <i data-lucide="wrench" class="w-8 h-8"></i>
+      </div>
+
+      <h2 class="font-display font-black text-2xl text-white uppercase tracking-tight">TALLER ANGELELLI</h2>
+      <p class="text-xs text-zinc-400 mt-2 mb-6">Acceso exclusivo al panel en la nube. Introduce la contraseña para continuar.</p>
+
+      <form id="form-login" class="space-y-4">
+        <div class="relative">
+          <i data-lucide="key" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+          <input type="password" id="input-password" required placeholder="Contraseña de acceso" 
+                 class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-dark-900 border border-zinc-800 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-brand-500 transition">
+        </div>
+        
+        <p id="error-login" class="text-red-500 text-xs hidden font-semibold">Contraseña incorrecta. Inténtalo de nuevo.</p>
+
+        <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-brand-500/30 transition">
+          Ingresar al Sistema
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-white/5 text-[11px] text-zinc-500">
+        Creado por <strong class="text-zinc-400">A. G. Center</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL DE CONTROL -->
+  <div id="contenido-taller" class="hidden flex-col min-h-screen">
+
+    <header class="fixed top-0 inset-x-0 z-40 bg-dark-950/85 backdrop-blur-xl border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between relative z-20">
+        
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/25">
+            <i data-lucide="wrench" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <span class="font-display font-bold text-lg sm:text-xl tracking-tight text-white block leading-none">
+              TALLER <span class="text-brand-500">ANGELELLI</span>
+            </span>
+            <span class="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest block mt-1">
+              Cloud Database (Firebase Firestore)
+            </span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button id="btn-open-nuevo-auto" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white text-xs font-extrabold uppercase tracking-wider shadow-lg shadow-brand-500/30 transition-all hover:scale-105">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Registrar Nuevo Auto</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <main class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full flex-1 relative z-20">
+      
+      <div class="mb-8 p-6 sm:p-8 rounded-3xl glass-card border border-white/10 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6 reveal">
+        <div class="relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-500 text-xs font-semibold mb-3">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Sincronizado con Firebase Cloud Firestore</span>
+          </div>
+          <h1 class="font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">
+            Control de Trabajos y Mantenimiento
+          </h1>
+          <p class="text-xs sm:text-sm text-zinc-400 mt-2 max-w-xl leading-relaxed">
+            Gestión en tiempo real de vehículos, historial de visitas y almacenamiento de fotografías en la nube.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 sm:gap-4 w-full lg:w-auto shrink-0 relative z-10">
+          <div class="text-center p-3.5 sm:p-4 rounded-2xl bg-dark-950 border border-white/5">
+            <span id="stat-total-autos" class="block font-display font-black text-xl sm:text-3xl text-white">0</span>
+            <span class="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Vehículos</span>
+          </div>
+          <div class="text-center p-3.5 sm:p-4 rounded-2xl bg-dark-950 border border-white/5">
+            <span id="stat-total-arreglos" class="block font-display font-black text-xl sm:text-3xl text-brand-500">0</span>
+            <span class="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Arreglos</span>
+          </div>
+          <div class="text-center p-3.5 sm:p-4 rounded-2xl bg-dark-950 border border-white/5">
+            <span id="stat-total-fotos" class="block font-display font-black text-xl sm:text-3xl text-emerald-400">0</span>
+            <span class="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Fotos Cloud</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-8 grid grid-cols-1 md:grid-cols-12 gap-4 reveal">
+        <div class="relative md:col-span-8">
+          <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+          <input type="text" id="panel-search-input" placeholder="Buscar por Patente (ej: AA123BC), Cliente o Modelo..." 
+                 class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-dark-900 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500 text-xs sm:text-sm transition shadow-2xl">
+        </div>
+
+        <div class="relative md:col-span-4 flex items-center gap-2">
+          <div class="relative w-full">
+            <i data-lucide="calendar" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-500"></i>
+            <select id="filter-fecha-ingreso" class="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-dark-900 border border-white/10 text-white text-xs sm:text-sm focus:outline-none focus:border-brand-500 transition">
+              <option value="todos">Filtrar por Fecha de Ingreso</option>
+            </select>
+          </div>
+          <button id="btn-reset-filtros" title="Limpiar filtros" class="p-3.5 rounded-2xl bg-dark-850 hover:bg-dark-800 border border-white/10 text-zinc-400 hover:text-white transition">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="grid-autos-panel" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+      <div id="no-results-panel" class="hidden text-center py-20 glass-card rounded-3xl max-w-md mx-auto my-12">
+        <div class="w-16 h-16 rounded-full bg-dark-800 text-brand-500 flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="car-front" class="w-8 h-8"></i>
+        </div>
+        <h3 class="font-display font-bold text-base text-white">Sin registros coincidentes</h3>
+        <p class="text-zinc-400 text-xs mt-2 px-6">No se encontraron autos en Firebase para la búsqueda realizada.</p>
+      </div>
+
+    </main>
+
+    <footer class="bg-dark-950 border-t border-white/10 py-6 px-4 relative z-25">
+      <div class="max-w-7xl mx-auto flex items-center justify-center text-center">
+        <p class="text-xs font-semibold text-zinc-400 tracking-wider">
+          Creado por <span class="text-white font-bold">A. G. Center</span>
+        </p>
+      </div>
+    </footer>
+
+    <!-- MODAL REGISTRO -->
+    <div id="modal-nuevo-auto" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-md hidden items-center justify-center p-4">
+      <div class="bg-dark-900 border border-white/15 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] mx-auto">
+        
+        <div class="p-5 border-b border-white/10 flex items-center justify-between bg-dark-850">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-brand-500/20 text-brand-500 flex items-center justify-center">
+              <i id="modal-icon-title" data-lucide="upload-cloud" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 id="modal-title-text" class="font-display font-bold text-base text-white">Cargar Vehículo a Firebase</h3>
+              <p class="text-[11px] text-zinc-400">Ingresa la patente, fechas de ingreso y repuestos cambiados</p>
+            </div>
+          </div>
+          <button id="btn-close-modal-nuevo" class="text-zinc-400 hover:text-white p-2 rounded-xl hover:bg-dark-800 transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto custom-scrollbar space-y-5">
+          <form id="form-nuevo-auto" class="space-y-4">
+            <input type="hidden" id="edit-auto-id" value="">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">
+                  Patente (Argentina) *
+                </label>
+                <div class="relative">
+                  <input type="text" id="input-patente" required placeholder="EJ: AA123BC" maxlength="9"
+                         class="w-full px-4 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white font-mono uppercase font-bold text-xs focus:border-brand-500 focus:outline-none transition">
+                  <span id="badge-tipo-patente" class="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-bold px-1 rounded bg-dark-800 text-zinc-400">A/B</span>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Cliente / Dueño *</label>
+                <input type="text" id="input-cliente" required placeholder="EJ: Juan Pérez" 
+                       class="w-full px-4 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white text-xs focus:border-brand-500 focus:outline-none transition">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Fecha de Ingreso *</label>
+                <input type="date" id="input-fecha" required 
+                       class="w-full px-3 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white text-xs focus:border-brand-500 focus:outline-none transition">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Modelo y Marca *</label>
+                <input type="text" id="input-modelo" required placeholder="EJ: Volkswagen Amarok 2.0 TDI" 
+                       class="w-full px-4 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white text-xs focus:border-brand-500 focus:outline-none transition">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Monto del Trabajo ($)</label>
+                <input type="number" id="input-monto" placeholder="EJ: 125000" 
+                       class="w-full px-4 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white text-xs focus:border-brand-500 focus:outline-none transition">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Repuestos y Cosas Mecánicas Cambiadas *</label>
+              <div class="flex gap-2 mb-3">
+                <input type="text" id="input-item-arreglo" placeholder="EJ: Cambio de kit de distribución y bomba de agua" 
+                       class="flex-1 px-4 py-2.5 rounded-xl bg-dark-950 border border-zinc-800 text-white text-xs focus:border-brand-500 focus:outline-none">
+                <button type="button" id="btn-add-item" class="px-4 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 text-white text-xs font-bold transition">
+                  Agregar
+                </button>
+              </div>
+              <ul id="lista-arreglos-temp" class="space-y-2 min-h-[50px] p-3 rounded-xl bg-dark-950 border border-zinc-850">
+                <li class="text-zinc-600 text-xs italic text-center py-2" id="msg-sin-items">Ningún trabajo o repuesto agregado aún</li>
+              </ul>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Fotografías del Vehículo y Piezas *</label>
+              <div class="border-2 border-dashed border-zinc-800 hover:border-brand-500/50 rounded-2xl p-5 text-center bg-dark-950 transition cursor-pointer" id="drop-zone">
+                <i data-lucide="image-plus" class="w-7 h-7 text-zinc-500 mx-auto mb-2"></i>
+                <p class="text-xs text-zinc-300 font-semibold">Selecciona o arrastra las imágenes aquí</p>
+                <input type="file" id="input-fotos" multiple accept="image/*" class="hidden">
+              </div>
+              <div id="preview-fotos" class="grid grid-cols-4 gap-2 mt-3"></div>
+            </div>
+
+            <div class="pt-4 border-t border-white/10 flex items-center justify-end gap-3">
+              <button type="button" id="btn-cancel-modal-nuevo" class="px-5 py-2.5 rounded-xl bg-dark-850 text-zinc-300 text-xs font-semibold hover:bg-dark-800 transition">
+                Cancelar
+              </button>
+              <button type="submit" id="btn-submit-auto" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-brand-500/25 transition">
+                Guardar en la Nube
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MODAL DETALLE -->
+    <div id="modal-detalle-auto" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-md hidden items-center justify-center p-3">
+      <div class="bg-dark-900 border border-white/15 rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] mx-auto">
+        
+        <div class="p-5 border-b border-white/10 flex items-center justify-between bg-dark-850">
+          <div class="flex items-center gap-3">
+            <span id="detail-patente-badge" class="patent-badge-arg px-3 py-1.5 rounded-lg text-white font-bold text-sm tracking-widest border border-white/20"></span>
+            <div>
+              <h3 id="detail-modelo" class="font-display font-extrabold text-base sm:text-lg text-white"></h3>
+              <p id="detail-cliente" class="text-xs text-zinc-400"></p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 no-print">
+            <button id="btn-print-ficha" class="p-2 rounded-xl text-zinc-300 hover:bg-dark-800 transition flex items-center gap-1.5 text-xs font-semibold px-3" title="Imprimir o Guardar PDF">
+              <i data-lucide="printer" class="w-4 h-4 text-brand-500"></i>
+              <span class="hidden sm:inline">Imprimir</span>
+            </button>
+            <button id="btn-eliminar-auto" class="p-2 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition" title="Eliminar de Firebase">
+              <i data-lucide="trash-2" class="w-5 h-5"></i>
+            </button>
+            <button id="btn-close-detail" class="text-zinc-400 hover:text-white p-2 rounded-xl hover:bg-dark-800 transition">
+              <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-6 overflow-y-auto custom-scrollbar space-y-6">
+          <div>
+            <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider block mb-3">Galería de Fotografías de Repuestos y Vehículo</span>
+            <div class="relative rounded-2xl overflow-hidden bg-dark-950 aspect-video mb-3 border border-white/10">
+              <img id="detail-active-img" src="" class="w-full h-full object-cover transition-all duration-500">
+            </div>
+            <div id="detail-thumbs" class="flex gap-3 overflow-x-auto pb-2 custom-scrollbar"></div>
+          </div>
+
+          <div class="glass-card p-5 rounded-2xl border border-white/5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-brand-500 uppercase tracking-wider">Cosas Mecánicas / Reparaciones / Repuestos</span>
+              <span id="detail-monto" class="text-sm font-extrabold text-emerald-400"></span>
+            </div>
+            <ul id="detail-lista-arreglos" class="space-y-2.5"></ul>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 text-xs text-zinc-500 border-t border-white/5">
+            <span>Fecha de Ingreso al Taller: <strong id="detail-fecha" class="text-zinc-300"></strong></span>
+            <span class="text-emerald-400 font-semibold flex items-center gap-1">
+              <i data-lucide="check-circle" class="w-4 h-4"></i> Mantenimiento Certificado
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfI68v1CLgkhA0KJ_57gC7m1SlRyPSE6g",
+      authDomain: "paneltallerangelelli.firebaseapp.com",
+      projectId: "paneltallerangelelli",
+      storageBucket: "paneltallerangelelli.firebasestorage.app",
+      messagingSenderId: "1754873670",
+      appId: "1:1754873670:web:d6f08ef0af38d076bbaf47",
+      measurementId: "G-8P1BM148XN"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const PASSWORD_CORRECTA = "TallerArch";
+    let dbAutos = [];
+    let tempArreglos = [];
+    let tempFotosBase64 = [];
+    let autoSeleccionadoId = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      initCursorLight();
+
+      const formLogin = document.getElementById("form-login");
+      const inputPass = document.getElementById("input-password");
+      const errorLogin = document.getElementById("error-login");
+      const pantallaLogin = document.getElementById("pantalla-login");
+      const contenidoTaller = document.getElementById("contenido-taller");
+
+      formLogin.onsubmit = async (e) => {
+        e.preventDefault();
+        if (inputPass.value === PASSWORD_CORRECTA) {
+          pantallaLogin.classList.add("hidden");
+          contenidoTaller.classList.remove("hidden");
+          contenidoTaller.classList.add("flex");
+          
+          await cargarAutosDesdeFirebase();
+          initScrollReveal();
+          setupEventListeners();
+          lucide.createIcons();
+        } else {
+          errorLogin.classList.remove("hidden");
+          inputPass.value = "";
+        }
+      };
+    });
+
+    function initCursorLight() {
+      const cursorLight = document.getElementById("cursor-light");
+      window.addEventListener("mousemove", (e) => {
+        cursorLight.style.left = `${e.clientX}px`;
+        cursorLight.style.top = `${e.clientY}px`;
+      });
+    }
+
+    async function cargarAutosDesdeFirebase() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "autos_taller"));
+        dbAutos = [];
+        querySnapshot.forEach((docSnap) => {
+          dbAutos.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        renderGridAutos(dbAutos);
+        actualizarEstadisticas();
+        poblarFiltroFechas();
+      } catch (e) {
+        console.error("Error al cargar datos desde Firebase:", e);
+      }
+    }
+
+    function actualizarEstadisticas() {
+      const statAutos = document.getElementById("stat-total-autos");
+      const statArreglos = document.getElementById("stat-total-arreglos");
+      const statFotos = document.getElementById("stat-total-fotos");
+
+      statAutos.innerText = dbAutos.length;
+      
+      let totalArreglos = 0;
+      let totalFotos = 0;
+
+      dbAutos.forEach(a => {
+        totalArreglos += (a.arreglos ? a.arreglos.length : 0);
+        totalFotos += (a.fotos ? a.fotos.length : 0);
+      });
+
+      statArreglos.innerText = totalArreglos;
+      statFotos.innerText = totalFotos;
+    }
+
+    function poblarFiltroFechas() {
+      const select = document.getElementById("filter-fecha-ingreso");
+      const fechasUnicas = [...new Set(dbAutos.map(a => a.fecha))].sort().reverse();
+      
+      select.innerHTML = `<option value="todos">Filtrar por Fecha de Ingreso</option>`;
+      
+      fechasUnicas.forEach(f => {
+        if(f) {
+          const opt = document.createElement("option");
+          opt.value = f;
+          opt.innerText = `Ingreso: ${f}`;
+          select.appendChild(opt);
+        }
+      });
+    }
+
+    function renderGridAutos(data) {
+      const grid = document.getElementById("grid-autos-panel");
+      const noRes = document.getElementById("no-results-panel");
+      grid.innerHTML = "";
+
+      if (data.length === 0) {
+        noRes.classList.remove("hidden");
+        return;
+      }
+      noRes.classList.add("hidden");
+
+      data.forEach(auto => {
+        const card = document.createElement("div");
+        card.className = "glass-card rounded-3xl overflow-hidden flex flex-col justify-between cursor-pointer reveal active";
+        card.onclick = () => abrirDetalleModal(auto);
+
+        const fotoPrincipal = (auto.fotos && auto.fotos.length > 0) ? auto.fotos[0] : "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1000&q=80";
+
+        card.innerHTML = `
+          <div>
+            <div class="relative h-48 w-full overflow-hidden bg-dark-950">
+              <img src="${fotoPrincipal}" alt="${auto.modelo}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-80"></div>
+              <div class="absolute top-3 left-3 flex items-center gap-2">
+                <span class="patent-badge-arg px-3 py-1 rounded-lg text-white font-bold text-xs tracking-widest">
+                  ${auto.patente}
+                </span>
+              </div>
+            </div>
+
+            <div class="p-5">
+              <h3 class="font-display font-bold text-base text-white leading-snug">${auto.modelo}</h3>
+              <p class="text-xs text-zinc-400 mt-1 flex items-center justify-between">
+                <span class="flex items-center gap-1">
+                  <i data-lucide="user" class="w-3.5 h-3.5 text-zinc-500"></i>
+                  ${auto.cliente}
+                </span>
+                <span class="text-[11px] font-semibold text-brand-500 bg-brand-500/10 px-2 py-0.5 rounded-md border border-brand-500/20">
+                  📅 ${auto.fecha}
+                </span>
+              </p>
+
+              <div class="mt-4 pt-3 border-t border-white/5">
+                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-1.5">Repuestos e intervenciones:</span>
+                <ul class="space-y-1">
+                  ${auto.arreglos ? auto.arreglos.slice(0, 2).map(arr => `
+                    <li class="text-xs text-zinc-300 flex items-start gap-2">
+                      <i data-lucide="check" class="w-3.5 h-3.5 text-brand-500 shrink-0 mt-0.5"></i>
+                      <span class="truncate">${arr}</span>
+                    </li>
+                  `).join('') : ''}
+                </ul>
+                ${auto.arreglos && auto.arreglos.length > 2 ? `<span class="text-[10px] text-brand-500 font-semibold mt-1.5 block">+${auto.arreglos.length - 2} ítems más</span>` : ''}
+              </div>
+            </div>
+          </div>
+
+          <div class="px-5 pb-4 pt-2 flex items-center justify-between text-[11px] text-zinc-500 border-t border-white/5">
+            <span class="text-emerald-400 font-semibold">${auto.monto ? `$ ${Number(auto.monto).toLocaleString("es-AR")}` : 'Sin costo reg.'}</span>
+            <span class="text-white font-semibold flex items-center gap-1 hover:text-brand-500 transition-colors">
+              Ver Ficha
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function setupEventListeners() {
+      const modalNuevo = document.getElementById("modal-nuevo-auto");
+      
+      document.getElementById("btn-open-nuevo-auto").onclick = () => {
+        resetearFormularioModal();
+        document.getElementById("modal-title-text").innerText = "Cargar Vehículo a Firebase";
+        document.getElementById("input-fecha").value = new Date().toISOString().split('T')[0];
+        modalNuevo.classList.remove("hidden");
+        modalNuevo.classList.add("flex");
+      };
+
+      document.getElementById("btn-close-modal-nuevo").onclick = () => {
+        modalNuevo.classList.add("hidden");
+        modalNuevo.classList.remove("flex");
+      };
+      document.getElementById("btn-cancel-modal-nuevo").onclick = () => {
+        modalNuevo.classList.add("hidden");
+        modalNuevo.classList.remove("flex");
+      };
+
+      const modalDetalle = document.getElementById("modal-detalle-auto");
+      document.getElementById("btn-close-detail").onclick = () => {
+        modalDetalle.classList.add("hidden");
+        modalDetalle.classList.remove("flex");
+      };
+
+      const inputPatente = document.getElementById("input-patente");
+      const badgeTipo = document.getElementById("badge-tipo-patente");
+
+      inputPatente.oninput = (e) => {
+        let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (val.length <= 6) {
+          badgeTipo.innerText = "Trad.";
+        } else {
+          badgeTipo.innerText = "Merc.";
+        }
+        e.target.value = val;
+      };
+
+      document.getElementById("btn-add-item").onclick = agregarArregloTemp;
+      document.getElementById("input-item-arreglo").onkeypress = (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          agregarArregloTemp();
+        }
+      };
+
+      const dropZone = document.getElementById("drop-zone");
+      const inputFotos = document.getElementById("input-fotos");
+
+      dropZone.onclick = () => inputFotos.click();
+      inputFotos.onchange = (e) => manejarFotosUpload(e.target.files);
+
+      document.getElementById("form-nuevo-auto").onsubmit = guardarAutoFirebase;
+
+      document.getElementById("panel-search-input").oninput = filtrarAutos;
+      document.getElementById("filter-fecha-ingreso").onchange = filtrarAutos;
+
+      document.getElementById("btn-reset-filtros").onclick = () => {
+        document.getElementById("panel-search-input").value = "";
+        document.getElementById("filter-fecha-ingreso").value = "todos";
+        renderGridAutos(dbAutos);
+      };
+
+      document.getElementById("btn-eliminar-auto").onclick = async () => {
+        if (!autoSeleccionadoId) return;
+        if (confirm("¿Confirmas que deseas eliminar este registro de Firebase?")) {
+          try {
+            await deleteDoc(doc(db, "autos_taller", autoSeleccionadoId));
+            await cargarAutosDesdeFirebase();
+            modalDetalle.classList.add("hidden");
+            modalDetalle.classList.remove("flex");
+          } catch(e) {
+            console.error("Error al eliminar:", e);
+          }
+        }
+      };
+
+      document.getElementById("btn-print-ficha").onclick = () => {
+        window.print();
+      };
+    }
+
+    function filtrarAutos() {
+      const query = document.getElementById("panel-search-input").value.toLowerCase().trim();
+      const fechaFiltro = document.getElementById("filter-fecha-ingreso").value;
+
+      const filtrados = dbAutos.filter(a => {
+        const matchTexto = 
+          a.patente.toLowerCase().replace(/\s/g, '').includes(query.replace(/\s/g, '')) ||
+          a.cliente.toLowerCase().includes(query) ||
+          a.modelo.toLowerCase().includes(query);
+
+        const matchFecha = (fechaFiltro === "todos" || a.fecha === fechaFiltro);
+
+        return matchTexto && matchFecha;
+      });
+
+      renderGridAutos(filtrados);
+    }
+
+    function resetearFormularioModal() {
+      document.getElementById("form-nuevo-auto").reset();
+      document.getElementById("edit-auto-id").value = "";
+      tempArreglos = [];
+      tempFotosBase64 = [];
+      document.getElementById("preview-fotos").innerHTML = "";
+      renderArreglosTemp();
+    }
+
+    // Compresión automática de imágenes para que pesen poco y entren en Firestore
+    function manejarFotosUpload(files) {
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Comprimir a JPEG con calidad 0.7 para reducir peso
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            tempFotosBase64.push(dataUrl);
+            renderPreviewsTemp();
+          };
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderPreviewsTemp() {
+      const preview = document.getElementById("preview-fotos");
+      preview.innerHTML = "";
+      tempFotosBase64.forEach((foto) => {
+        const div = document.createElement("div");
+        div.className = "relative h-16 rounded-lg overflow-hidden border border-white/10 group";
+        div.innerHTML = `<img src="${foto}" class="w-full h-full object-cover">`;
+        preview.appendChild(div);
+      });
+    }
+
+    function agregarArregloTemp() {
+      const input = document.getElementById("input-item-arreglo");
+      const val = input.value.trim();
+      if (!val) return;
+
+      tempArreglos.push(val);
+      input.value = "";
+      renderArreglosTemp();
+    }
+
+    function renderArreglosTemp() {
+      const lista = document.getElementById("lista-arreglos-temp");
+      lista.innerHTML = "";
+
+      if (tempArreglos.length === 0) {
+        lista.innerHTML = `<li class="text-zinc-600 text-xs italic text-center py-2" id="msg-sin-items">Ningún detalle agregado aún</li>`;
+        return;
+      }
+
+      tempArreglos.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.className = "text-xs text-zinc-200 bg-dark-850 px-3 py-2 rounded-lg flex items-center justify-between border border-white/5";
+        li.innerHTML = `
+          <span>${item}</span>
+          <button type="button" onclick="eliminarArregloTemp(${index})" class="text-zinc-500 hover:text-brand-500">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        `;
+        lista.appendChild(li);
+      });
+      lucide.createIcons();
+    }
+
+    window.eliminarArregloTemp = function(index) {
+      tempArreglos.splice(index, 1);
+      renderArreglosTemp();
+    }
+
+    async function guardarAutoFirebase(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById("btn-submit-auto");
+      submitBtn.innerText = "Guardando en la nube...";
+      submitBtn.disabled = true;
+
+      try {
+        const rawPatente = document.getElementById("input-patente").value.toUpperCase().trim();
+        let patenteFormateada = rawPatente;
+        if (rawPatente.length === 6) {
+          patenteFormateada = `${rawPatente.substring(0,3)} ${rawPatente.substring(3,6)}`;
+        } else if (rawPatente.length === 7) {
+          patenteFormateada = `${rawPatente.substring(0,2)} ${rawPatente.substring(2,5)} ${rawPatente.substring(5,7)}`;
+        }
+
+        const nuevoAuto = {
+          patente: patenteFormateada,
+          cliente: document.getElementById("input-cliente").value.trim(),
+          modelo: document.getElementById("input-modelo").value.trim(),
+          monto: document.getElementById("input-monto").value || null,
+          fecha: document.getElementById("input-fecha").value || new Date().toISOString().split('T')[0],
+          arreglos: tempArreglos.length > 0 ? [...tempArreglos] : ["Mantenimiento general"],
+          fotos: tempFotosBase64.length > 0 ? tempFotosBase64 : ["https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1000&q=80"]
+        };
+
+        await addDoc(collection(db, "autos_taller"), nuevoAuto);
+        await cargarAutosDesdeFirebase();
+
+        submitBtn.innerText = "Guardar en la Nube";
+        submitBtn.disabled = false;
+        document.getElementById("modal-nuevo-auto").classList.add("hidden");
+        document.getElementById("modal-nuevo-auto").classList.remove("flex");
+        
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      } catch (err) {
+        console.error("Error detallado de Firebase:", err);
+        alert("Error al guardar en la nube: " + err.message);
+        submitBtn.innerText = "Guardar en la Nube";
+        submitBtn.disabled = false;
+      }
+    }
+
+    function abrirDetalleModal(auto) {
+      autoSeleccionadoId = auto.id;
+
+      document.getElementById("detail-patente-badge").innerText = auto.patente;
+      document.getElementById("detail-modelo").innerText = auto.modelo;
+      document.getElementById("detail-cliente").innerText = `Cliente / Dueño: ${auto.cliente}`;
+      document.getElementById("detail-fecha").innerText = auto.fecha;
+
+      const detailMonto = document.getElementById("detail-monto");
+      if (auto.monto) {
+        detailMonto.innerText = `$ ${Number(auto.monto).toLocaleString("es-AR")}`;
+      } else {
+        detailMonto.innerText = "";
+      }
+
+      const mainImg = document.getElementById("detail-active-img");
+      mainImg.src = auto.fotos && auto.fotos.length > 0 ? auto.fotos[0] : '';
+
+      const thumbsCont = document.getElementById("detail-thumbs");
+      thumbsCont.innerHTML = "";
+      if(auto.fotos) {
+        auto.fotos.forEach((foto, i) => {
+          const img = document.createElement("img");
+          img.src = foto;
+          img.className = `w-20 h-14 object-cover rounded-xl border-2 cursor-pointer transition-all ${i === 0 ? 'border-brand-500 scale-105' : 'border-transparent opacity-60 hover:opacity-100'}`;
+          img.onclick = () => {
+            mainImg.src = foto;
+            document.querySelectorAll("#detail-thumbs img").forEach(t => t.classList.remove('border-brand-500', 'scale-105'));
+            img.classList.add('border-brand-500', 'scale-105');
+          };
+          thumbsCont.appendChild(img);
+        });
+      }
+
+      const lista = document.getElementById("detail-lista-arreglos");
+      lista.innerHTML = "";
+      if(auto.arreglos) {
+        auto.arreglos.forEach(arr => {
+          const li = document.createElement("li");
+          li.className = "text-xs sm:text-sm text-zinc-200 flex items-start gap-2.5";
+          li.innerHTML = `
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
+            <span>${arr}</span>
+          `;
+          lista.appendChild(li);
+        });
+      }
+
+      const modalDetalle = document.getElementById("modal-detalle-auto");
+      modalDetalle.classList.remove("hidden");
+      modalDetalle.classList.add("flex");
+      lucide.createIcons();
+    }
+
+    function initScrollReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+    }
+  </script>
+</body>
+</html>
