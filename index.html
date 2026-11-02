@@ -875,12 +875,24 @@
       });
     }
 
+    function procesarTextoArreglos(texto) {
+      if (!texto) return [];
+      if (texto.includes("✅") || texto.includes("•")) {
+        return texto
+          .split(/[✅•]+/)
+          .map(item => item.trim())
+          .filter(Boolean);
+      }
+      return [texto.trim()];
+    }
+
     function agregarArregloTemp() {
       const input = document.getElementById("input-item-arreglo");
       const val = input.value.trim();
       if (!val) return;
 
-      tempArreglos.push(val);
+      const nuevosItems = procesarTextoArreglos(val);
+      tempArreglos.push(...nuevosItems);
       input.value = "";
       renderArreglosTemp();
     }
@@ -920,6 +932,14 @@
       submitBtn.disabled = true;
 
       try {
+        // Si quedó texto escrito en el campo de arreglos sin haber tocado "Agregar", lo sumamos automáticamente
+        const inputArregloPendiente = document.getElementById("input-item-arreglo");
+        if (inputArregloPendiente && inputArregloPendiente.value.trim() !== "") {
+          const itemsExtra = procesarTextoArreglos(inputArregloPendiente.value.trim());
+          tempArreglos.push(...itemsExtra);
+          inputArregloPendiente.value = "";
+        }
+
         const rawPatente = document.getElementById("input-patente").value.toUpperCase().trim();
         let patenteFormateada = rawPatente;
         if (rawPatente.length === 6) {
