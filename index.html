@@ -3,45 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Taller Angelelli | Mecánica y Servicios Automotores</title>
-  <meta name="description" content="Taller mecánico automotor de alta precisión en La Rioja. Trabajos garantizados, mantenimiento, inyección, frenos y tren delantero.">
-  
-  <!-- Favicon con logo oficial -->
+  <title>Taller Angelelli | Ficha Técnica</title>
   <link rel="icon" type="image/jpeg" href="logo.jpg">
-  <link rel="apple-touch-icon" href="logo.jpg">
-
-  <!-- Google Fonts: Outfit & Inter -->
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Supabase JS Client v2 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            display: ['Outfit', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
           },
           colors: {
             brand: {
-              DEFAULT: '#e50914', // Rojo Racing Taller Angelelli
-              hover: '#c80812',
-              glow: 'rgba(229, 9, 20, 0.4)',
+              500: '#ff2a2a',
+              600: '#e60000',
+              700: '#b30000',
+              glow: 'rgba(255, 42, 42, 0.35)'
             },
-            carbon: {
-              950: '#07080a',
-              900: '#0e1015',
-              850: '#14171f',
-              800: '#1c202a',
-              700: '#282e3c',
+            dark: {
+              950: '#07090e',
+              900: '#0f131c',
+              850: '#151b27',
+              800: '#1d2434',
+              700: '#2c364d'
             }
           }
         }
@@ -50,1374 +43,987 @@
   </script>
 
   <style>
-    *, ::before, ::after {
-      box-sizing: border-box;
-    }
-    body {
-      background-color: #07080a;
-      color: #e4e4e7;
-      width: 100%;
-      position: relative;
+    *, ::before, ::after { box-sizing: border-box; }
+    html, body {
+      background-color: #07090e;
+      color: #f1f5f9;
       overflow-x: hidden;
+      width: 100%;
+      height: 100%;
+    }
+
+    #cursor-light {
+      pointer-events: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 42, 42, 0.12) 0%, rgba(255, 42, 42, 0.03) 40%, transparent 70%);
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      transition: width 0.3s, height 0.3s;
+    }
+
+    .glass-card {
+      background: linear-gradient(135deg, rgba(21, 27, 39, 0.85) 0%, rgba(15, 19, 28, 0.95) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
     
-    .spotlight-card {
-      position: relative;
-      background: linear-gradient(180deg, rgba(20, 23, 31, 0.95) 0%, rgba(14, 16, 21, 0.98) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      overflow: hidden;
-    }
-    .spotlight-card::before {
-      content: '';
-      position: absolute;
-      top: var(--mouse-y, -1000px);
-      left: var(--mouse-x, -1000px);
-      width: 450px;
-      height: 450px;
-      background: radial-gradient(circle, rgba(229, 9, 20, 0.12) 0%, transparent 70%);
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      transition: opacity 0.3s;
-      opacity: 0;
-    }
-    .spotlight-card:hover::before {
-      opacity: 1;
-    }
-    .spotlight-card:hover {
-      border-color: rgba(229, 9, 20, 0.35);
+    .glass-card:hover {
+      border-color: rgba(255, 42, 42, 0.6);
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 30px 60px -15px rgba(255, 42, 42, 0.35), 0 0 25px rgba(255, 42, 42, 0.15);
+      z-index: 10;
     }
 
     .reveal {
       opacity: 0;
       transform: translateY(24px);
-      transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .reveal.active {
       opacity: 1;
       transform: translateY(0);
     }
 
-    ::-webkit-scrollbar {
-      width: 6px;
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #07090e; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #1d2434; border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #ff2a2a; }
+
+    .patent-badge-arg {
+      font-family: 'Space Grotesk', monospace;
+      letter-spacing: 0.15em;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     }
-    ::-webkit-scrollbar-track {
-      background: #07080a;
+
+    /* ELEMENTOS EXCLUSIVOS DE IMPRESIÓN */
+    .print-only {
+      display: none;
     }
-    ::-webkit-scrollbar-thumb {
-      background: #1c202a;
-      border-radius: 4px;
+
+    @media print {
+      /* Elimina encabezados (título de página) y pies de página (URL inferior) del navegador */
+      @page {
+        size: A4 portrait;
+        margin: 0mm !important;
+      }
+
+      html, body {
+        background: #ffffff !important;
+        color: #111827 !important;
+        height: auto !important;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      body * {
+        visibility: hidden;
+      }
+
+      #modal-detalle-auto,
+      #modal-detalle-auto * {
+        visibility: visible;
+      }
+
+      #modal-detalle-auto {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        background: #ffffff !important;
+        color: #111827 !important;
+        padding: 15mm 18mm !important;
+        margin: 0 !important;
+        display: block !important;
+      }
+
+      #modal-detalle-card {
+        background: transparent !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: none !important;
+        max-height: none !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        border-radius: 16px !important;
+        position: relative !important;
+        overflow: hidden !important;
+      }
+
+      #modal-detalle-body {
+        overflow: visible !important;
+        max-height: none !important;
+      }
+
+      .print-only {
+        display: flex !important;
+      }
+
+      /* Marca de agua de fondo en la impresión */
+      #print-watermark {
+        display: flex !important;
+        position: absolute;
+        inset: 0;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* Ajustes de colores para que luzca impecable sobre papel blanco */
+      #modal-detalle-auto .bg-dark-850,
+      #modal-detalle-auto .bg-dark-900,
+      #modal-detalle-auto .bg-dark-950,
+      #modal-detalle-auto .glass-card {
+        background: rgba(249, 250, 251, 0.85) !important;
+        border-color: #d1d5db !important;
+        color: #111827 !important;
+        box-shadow: none !important;
+      }
+
+      #modal-detalle-auto h3,
+      #modal-detalle-auto strong {
+        color: #111827 !important;
+      }
+
+      #modal-detalle-auto p,
+      #modal-detalle-auto span,
+      #modal-detalle-auto li {
+        color: #374151 !important;
+      }
+
+      #modal-detalle-auto #detail-patente-badge {
+        background: #111827 !important;
+        color: #ffffff !important;
+        border: 1px solid #000000 !important;
+      }
+
+      #modal-detalle-auto #detail-monto {
+        color: #059669 !important;
+      }
+
+      .no-print,
+      #detail-thumbs {
+        display: none !important;
+      }
     }
   </style>
 </head>
-<body class="selection:bg-brand selection:text-white min-h-screen flex flex-col font-sans">
+<body class="selection:bg-brand-500 selection:text-white min-h-screen flex flex-col font-sans antialiased relative">
 
-  <!-- TOAST NOTIFICATIONS -->
-  <div id="toast-container" class="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+  <div id="cursor-light" class="no-print"></div>
 
-  <!-- NAVBAR PROFESIONAL CON MENÚ HAMBURGUESA -->
-  <header class="fixed top-0 inset-x-0 z-40 bg-carbon-950/95 backdrop-blur-xl border-b border-white/10 shadow-2xl">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+  <!-- PANTALLA DE ACCESO / CONTRASEÑA -->
+  <div id="pantalla-login" class="fixed inset-0 z-50 bg-dark-950/90 backdrop-blur-xl flex items-center justify-center p-4 no-print">
+    <div class="glass-card p-8 rounded-3xl max-w-md w-full border border-white/10 shadow-2xl text-center relative overflow-hidden">
       
-      <!-- Logo Oficial -->
-      <a href="#" class="flex items-center gap-3 group">
+      <div class="w-24 h-24 rounded-full bg-dark-900 border-2 border-brand-500/40 flex items-center justify-center mx-auto mb-5 shadow-xl shadow-brand-500/20 overflow-hidden">
+        <img src="logo.jpg" alt="Logo Taller Angelelli" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="hidden w-full h-full items-center justify-center bg-gradient-to-tr from-brand-600 to-brand-500 text-white">
+          <i data-lucide="wrench" class="w-8 h-8"></i>
+        </div>
+      </div>
+
+      <h2 class="font-display font-black text-2xl text-white uppercase tracking-tight">TALLER ANGELELLI</h2>
+      <p class="text-xs text-zinc-400 mt-2 mb-6">Acceso exclusivo al panel en la nube. Introduce la contraseña para continuar.</p>
+
+      <form id="form-login" class="space-y-4">
         <div class="relative">
-          <img src="logo.jpg" alt="Logo Taller Angelelli" 
-               class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-brand shadow-lg shadow-brand/25 group-hover:scale-105 transition-transform duration-300">
-          <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-carbon-950 animate-pulse"></span>
+          <i data-lucide="key" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+          <input type="password" id="input-password" required placeholder="Contraseña de acceso" 
+                 class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-dark-900 border border-zinc-800 text-white placeholder-zinc-500 text-sm focus:outline-none focus:border-brand-500 transition">
         </div>
-        <div>
-          <span class="block font-display font-black text-base sm:text-xl tracking-wider text-white uppercase leading-none">
-            Taller <span class="text-brand">Angelelli</span>
-          </span>
-          <span class="text-[10px] sm:text-[11px] font-semibold tracking-widest text-zinc-400 uppercase">
-            La Rioja • Mecánica
-          </span>
-        </div>
-      </a>
-
-      <!-- Navegación Desktop -->
-      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-zinc-300">
-        <a href="#trabajos" class="hover:text-brand transition-colors">Trabajos</a>
-        <a href="#servicios" class="hover:text-brand transition-colors">Especialidades</a>
-        <a href="#turnos" class="hover:text-brand transition-colors">Sacar Turno</a>
-        <a href="#preguntas" class="hover:text-brand transition-colors">Preguntas</a>
-        <a href="#contacto" class="hover:text-brand transition-colors">Ubicación</a>
-      </nav>
-
-      <!-- Acciones Derecha -->
-      <div class="flex items-center gap-2.5">
-        <div id="estado-taller-nav" class="hidden xl:flex items-center gap-2 px-3.5 py-1 rounded-full bg-carbon-850 border border-white/10 text-xs font-semibold">
-          <span id="dot-estado" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span id="texto-estado" class="text-zinc-300">Consultando...</span>
-        </div>
-
-        <a href="https://wa.me/5493804374962?text=Hola%20Taller%20Angelelli,%20tengo%20una%20consulta" target="_blank" rel="noopener noreferrer" 
-           class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm transition-all shadow-lg shadow-emerald-600/25">
-          <i data-lucide="message-circle" class="w-4 h-4"></i>
-          <span>WhatsApp</span>
-        </a>
-
-        <!-- Botón Menú Hamburguesa -->
-        <button id="btn-menu-movil" class="md:hidden p-2 rounded-xl bg-carbon-850 border border-white/10 text-zinc-200 hover:text-white transition focus:outline-none" aria-label="Menú">
-          <i data-lucide="menu" class="w-6 h-6"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Menú Desplegable Móvil con Iconos Profesionales (Sin emojis) -->
-    <div id="menu-movil" class="hidden md:hidden bg-carbon-900 border-t border-white/10 px-4 pt-3 pb-5 space-y-3 shadow-2xl">
-      <div class="flex items-center justify-between pb-2 border-b border-white/5 text-xs">
-        <span class="text-zinc-400">Estado del taller:</span>
-        <span id="texto-estado-movil" class="text-emerald-400 font-bold flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Abierto
-        </span>
-      </div>
-      <nav class="flex flex-col space-y-1.5 text-sm font-medium text-zinc-200">
-        <a href="#trabajos" class="link-movil px-3 py-2.5 rounded-lg hover:bg-carbon-800 hover:text-brand transition flex items-center gap-3">
-          <i data-lucide="car" class="w-4 h-4 text-brand"></i> Trabajos Realizados
-        </a>
-        <a href="#servicios" class="link-movil px-3 py-2.5 rounded-lg hover:bg-carbon-800 hover:text-brand transition flex items-center gap-3">
-          <i data-lucide="wrench" class="w-4 h-4 text-brand"></i> Especialidades
-        </a>
-        <a href="#turnos" class="link-movil px-3 py-2.5 rounded-lg hover:bg-carbon-800 hover:text-brand transition flex items-center gap-3">
-          <i data-lucide="calendar" class="w-4 h-4 text-brand"></i> Sacar Turno
-        </a>
-        <a href="#preguntas" class="link-movil px-3 py-2.5 rounded-lg hover:bg-carbon-800 hover:text-brand transition flex items-center gap-3">
-          <i data-lucide="help-circle" class="w-4 h-4 text-brand"></i> Preguntas Frecuentes
-        </a>
-        <a href="#contacto" class="link-movil px-3 py-2.5 rounded-lg hover:bg-carbon-800 hover:text-brand transition flex items-center gap-3">
-          <i data-lucide="map-pin" class="w-4 h-4 text-brand"></i> Ubicación y Horarios
-        </a>
-      </nav>
-      <a href="https://wa.me/5493804374962?text=Hola%20Taller%20Angelelli,%20tengo%20una%20consulta" target="_blank"
-         class="w-full py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md">
-        <i data-lucide="message-circle" class="w-4 h-4"></i> Contactar por WhatsApp
-      </a>
-    </div>
-  </header>
-
-  <!-- HERO SECTION (Con contenedor estricto para evitar desbordes a la derecha) -->
-  <section class="relative pt-32 pb-16 sm:pt-40 sm:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full overflow-hidden">
-    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[600px] h-[320px] bg-brand/15 blur-[120px] rounded-full pointer-events-none"></div>
-
-    <div class="relative text-center max-w-3xl mx-auto">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-carbon-850/80 border border-white/10 text-xs font-semibold text-white mb-6 shadow-sm backdrop-blur-md">
-        <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span>
-        <span class="text-zinc-300">Taller Mecánico Oficial en La Rioja Capital</span>
-      </div>
-
-      <h1 class="font-display font-black text-3xl sm:text-6xl lg:text-7xl tracking-tight text-white uppercase leading-[1.05]">
-        Mecánica de Alta Precisión y <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand via-red-500 to-rose-200">Confianza Total</span>
-      </h1>
-
-      <p class="mt-4 text-sm sm:text-lg text-zinc-300 font-normal leading-relaxed max-w-2xl mx-auto">
-        Diagnóstico computarizado, mantenimiento programado y reparaciones con repuestos de primera línea. Revisa nuestros autos entregados o solicita tu turno por WhatsApp en segundos.
-      </p>
-
-      <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <a href="#turnos" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-xl bg-gradient-to-r from-brand to-brand-hover text-white font-bold text-xs sm:text-sm tracking-wide uppercase transition-all shadow-xl shadow-brand/30 hover:scale-[1.02]">
-          <i data-lucide="calendar" class="w-4 h-4"></i>
-          <span>Solicitar Turno por WhatsApp</span>
-        </a>
-        <a href="#trabajos" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-carbon-850 hover:bg-carbon-800 text-zinc-200 font-semibold text-xs sm:text-sm border border-white/10 transition-all">
-          <span>Ver Autos Arreglados</span>
-          <i data-lucide="arrow-down" class="w-4 h-4 text-zinc-400"></i>
-        </a>
-      </div>
-
-      <!-- Tarjetas de Información Clave -->
-      <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-3 pt-8 border-t border-white/5 max-w-3xl mx-auto">
-        <div class="spotlight-card p-4 rounded-xl flex flex-col justify-center items-center">
-          <div class="w-7 h-7 rounded-lg bg-brand/10 text-brand flex items-center justify-center mb-1.5">
-            <i data-lucide="shield-check" class="w-4 h-4"></i>
-          </div>
-          <span class="block font-display font-black text-xl text-white">100%</span>
-          <span class="text-[11px] text-zinc-400 font-medium">Trabajos Garantizados</span>
-        </div>
-
-        <div class="spotlight-card p-4 rounded-xl flex flex-col justify-center items-center border-brand/20">
-          <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-1.5">
-            <i data-lucide="clock" class="w-4 h-4"></i>
-          </div>
-          <span class="block font-display font-black text-lg text-white tracking-tight">8 a 13 • 17 a 21</span>
-          <span class="text-[11px] text-zinc-400 font-medium">Lunes a Sábado</span>
-        </div>
-
-        <div class="spotlight-card p-4 rounded-xl flex flex-col justify-center items-center">
-          <div class="w-7 h-7 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center mb-1.5">
-            <i data-lucide="map-pin" class="w-4 h-4"></i>
-          </div>
-          <span class="block font-display font-black text-xl text-white">La Rioja</span>
-          <span class="text-[11px] text-zinc-400 font-medium">Ubicación y Fácil Acceso</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECCIÓN: ESPECIALIDADES / SERVICIOS -->
-  <section id="servicios" class="py-16 bg-carbon-900/35 border-y border-white/5">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-2xl mx-auto mb-10 reveal">
-        <span class="text-brand font-semibold text-xs tracking-widest uppercase">Lo que Hacemos</span>
-        <h2 class="mt-2 font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">
-          Nuestras Especialidades
-        </h2>
-        <p class="mt-2 text-zinc-400 text-xs sm:text-sm">
-          Equipamiento y herramientas especializadas para vehículos nacionales e importados.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div class="spotlight-card p-5 rounded-xl reveal">
-          <div class="w-10 h-10 rounded-lg bg-brand/10 text-brand flex items-center justify-center mb-3">
-            <i data-lucide="cpu" class="w-5 h-5"></i>
-          </div>
-          <h3 class="font-display font-bold text-base text-white">Inyección Electrónica</h3>
-          <p class="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-            Escaneo y diagnóstico computarizado multimarca, limpieza de inyectores por ultrasonido y calibración de sensores.
-          </p>
-        </div>
-
-        <div class="spotlight-card p-5 rounded-xl reveal">
-          <div class="w-10 h-10 rounded-lg bg-brand/10 text-brand flex items-center justify-center mb-3">
-            <i data-lucide="git-commit" class="w-5 h-5"></i>
-          </div>
-          <h3 class="font-display font-bold text-base text-white">Distribución y Correas</h3>
-          <p class="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-            Reemplazo preventivo de kit de distribución, bomba de agua, tensores y correas poli-V con puesta a punto exacta.
-          </p>
-        </div>
-
-        <div class="spotlight-card p-5 rounded-xl reveal">
-          <div class="w-10 h-10 rounded-lg bg-brand/10 text-brand flex items-center justify-center mb-3">
-            <i data-lucide="disc" class="w-5 h-5"></i>
-          </div>
-          <h3 class="font-display font-bold text-base text-white">Frenos de Precisión</h3>
-          <p class="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-            Cambio de pastillas, rectificado de discos, purgado electrónico del sistema ABS y mantenimiento de cintas y tambores.
-          </p>
-        </div>
-
-        <div class="spotlight-card p-5 rounded-xl reveal">
-          <div class="w-10 h-10 rounded-lg bg-brand/10 text-brand flex items-center justify-center mb-3">
-            <i data-lucide="navigation-2" class="w-5 h-5"></i>
-          </div>
-          <h3 class="font-display font-bold text-base text-white">Tren Delantero y Suspensión</h3>
-          <p class="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-            Amortiguadores, bujes, cazoletas, extremos y rótulas para garantizar confort de marcha y máxima seguridad.
-          </p>
-        </div>
-
-        <div class="spotlight-card p-5 rounded-xl reveal">
-          <div class="w-10 h-10 rounded-lg bg-brand/10 text-brand flex items-center justify-center mb-3">
-            <i data-lucide="droplet" class="w-5 h-5"></i>
-          </div>
-          <h3 class="font-display font-bold text-base text-white">Service y Mantenimiento</h3>
-          <p class="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-            Cambio de aceite sintético/semisintético de primeras marcas, filtros de aire, aceite, combustible y habitáculo.
-          </p>
-        </div>
-
-        <div class="spotlight-card p-5 rounded-xl reveal">
-          <div class="w-10 h-10 rounded-lg bg-brand/10 text-brand flex items-center justify-center mb-3">
-            <i data-lucide="settings-2" class="w-5 h-5"></i>
-          </div>
-          <h3 class="font-display font-bold text-base text-white">Embragues y Caja</h3>
-          <p class="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-            Sustitución de placa, disco, crapodina hidráulica o mecánica, rectificado de volante y regulación precisa.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECCIÓN: TRABAJOS REALIZADOS (3x3 por página) -->
-  <section id="trabajos" class="py-16 relative">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-      
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 reveal">
-        <div>
-          <span class="text-brand font-semibold text-xs tracking-widest uppercase">Galería de Entregas</span>
-          <h2 class="mt-1 font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">
-            Autos Arreglados
-          </h2>
-          <p class="mt-1 text-zinc-400 text-xs sm:text-base max-w-xl">
-            Haz clic en cualquier vehículo para ver los detalles completos del trabajo realizado.
-          </p>
-        </div>
-
-        <!-- Contador dinámico -->
-        <div class="flex items-center gap-2">
-          <span id="contador-trabajos" class="px-3 py-1 rounded-lg bg-carbon-850 border border-white/10 text-xs font-semibold text-zinc-300">
-            Cargando trabajos...
-          </span>
-        </div>
-      </div>
-
-      <!-- Solo Buscador -->
-      <div class="mb-8 p-3.5 sm:p-4 rounded-2xl bg-carbon-900/80 border border-white/10 flex items-center reveal">
-        <div class="relative w-full">
-          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400"></i>
-          <input type="text" id="input-buscar-trabajo" placeholder="Buscar por auto o arreglo (ej. Hilux, frenos...)"
-                 class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-carbon-950 border border-zinc-800 text-white placeholder-zinc-500 text-xs sm:text-sm focus:outline-none focus:border-brand transition">
-        </div>
-      </div>
-
-      <!-- Grid de Autos -->
-      <div id="grid-trabajos" class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-        <!-- Inyectado dinámicamente por JS -->
-      </div>
-
-      <!-- Controles de Paginación (3x3 = 9 por página) -->
-      <div id="paginacion-trabajos" class="mt-10 flex flex-wrap items-center justify-center gap-2"></div>
-
-      <!-- Estado vacío -->
-      <div id="estado-vacio" class="hidden text-center py-12 px-4 spotlight-card rounded-2xl max-w-md mx-auto mt-6">
-        <div class="w-12 h-12 rounded-full bg-carbon-800 text-brand flex items-center justify-center mx-auto mb-3">
-          <i data-lucide="car" class="w-6 h-6"></i>
-        </div>
-        <h3 class="font-display font-bold text-base text-white">No se encontraron trabajos</h3>
-        <p class="text-zinc-400 text-xs mt-1">Prueba con otra palabra en el buscador.</p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- SECCIÓN: SACAR TURNO (WHATSAPP INTELIGENTE) -->
-  <section id="turnos" class="py-16 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full relative">
-    <div class="spotlight-card rounded-3xl p-5 sm:p-12 border border-white/10 relative overflow-hidden shadow-2xl">
-      <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-brand/15 blur-[120px] rounded-full pointer-events-none"></div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         
-        <div class="lg:col-span-5 reveal">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 mb-3">
-            <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
-            <span>Sin intermediarios ni esperas</span>
-          </div>
-          
-          <h2 class="font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight leading-tight">
-            Saca tu turno fácil y directo por WhatsApp
-          </h2>
-          
-          <p class="mt-3 text-zinc-300 text-xs sm:text-base leading-relaxed">
-            Completa tus datos o toca un botón rápido de servicio. Te generaremos un mensaje listo para enviar y coordinar el día de ingreso al taller.
-          </p>
+        <p id="error-login" class="text-red-500 text-xs hidden font-semibold">Contraseña incorrecta. Inténtalo de nuevo.</p>
 
-          <div class="mt-6 space-y-3">
-            <div class="flex items-start gap-3">
-              <div class="w-7 h-7 rounded-lg bg-carbon-800 flex items-center justify-center text-brand shrink-0">
-                <i data-lucide="user" class="w-3.5 h-3.5"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-bold text-white uppercase">Tu Nombre</h4>
-                <p class="text-[11px] text-zinc-400">Para saber con quién hablamos.</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-3">
-              <div class="w-7 h-7 rounded-lg bg-carbon-800 flex items-center justify-center text-brand shrink-0">
-                <i data-lucide="car-front" class="w-3.5 h-3.5"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-bold text-white uppercase">Vehículo</h4>
-                <p class="text-[11px] text-zinc-400">Marca, modelo y año para preparar repuestos.</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-3">
-              <div class="w-7 h-7 rounded-lg bg-carbon-800 flex items-center justify-center text-brand shrink-0">
-                <i data-lucide="wrench" class="w-3.5 h-3.5"></i>
-              </div>
-              <div>
-                <h4 class="text-xs font-bold text-white uppercase">Motivo de la Visita</h4>
-                <p class="text-[11px] text-zinc-400">Describe el arreglo o selecciona un botón rápido.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="lg:col-span-7 bg-carbon-900/95 p-5 sm:p-8 rounded-2xl border border-white/10 shadow-2xl reveal">
-          <form id="form-turno" class="space-y-4">
-            <div>
-              <label for="cliente-nombre" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                Tu Nombre y Apellido *
-              </label>
-              <input type="text" id="cliente-nombre" required placeholder="Ej: Juan Pérez"
-                class="w-full px-3.5 py-3 rounded-xl bg-carbon-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-brand transition text-xs sm:text-sm">
-            </div>
-
-            <div>
-              <label for="cliente-vehiculo" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                Vehículo (Marca, Modelo, Año) *
-              </label>
-              <input type="text" id="cliente-vehiculo" required placeholder="Ej: Toyota Hilux 2020 / VW Gol 1.6"
-                class="w-full px-3.5 py-3 rounded-xl bg-carbon-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-brand transition text-xs sm:text-sm">
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                Selección Rápida de Servicio:
-              </label>
-              <!-- Botones rápidos con iconos profesionales creados en lugar de emojis -->
-              <div class="flex flex-wrap gap-2 mb-2">
-                <button type="button" class="chip-servicio inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-carbon-950 hover:bg-carbon-800 border border-white/10 text-xs text-zinc-300 hover:text-white transition">
-                  <i data-lucide="droplet" class="w-3.5 h-3.5 text-brand"></i> Service Completo
-                </button>
-                <button type="button" class="chip-servicio inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-carbon-950 hover:bg-carbon-800 border border-white/10 text-xs text-zinc-300 hover:text-white transition">
-                  <i data-lucide="git-commit" class="w-3.5 h-3.5 text-brand"></i> Kit Distribución
-                </button>
-                <button type="button" class="chip-servicio inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-carbon-950 hover:bg-carbon-800 border border-white/10 text-xs text-zinc-300 hover:text-white transition">
-                  <i data-lucide="disc" class="w-3.5 h-3.5 text-brand"></i> Frenos / Pastillas
-                </button>
-                <button type="button" class="chip-servicio inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-carbon-950 hover:bg-carbon-800 border border-white/10 text-xs text-zinc-300 hover:text-white transition">
-                  <i data-lucide="cpu" class="w-3.5 h-3.5 text-brand"></i> Escaneo Computarizado
-                </button>
-                <button type="button" class="chip-servicio inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-carbon-950 hover:bg-carbon-800 border border-white/10 text-xs text-zinc-300 hover:text-white transition">
-                  <i data-lucide="navigation-2" class="w-3.5 h-3.5 text-brand"></i> Tren Delantero
-                </button>
-              </div>
-
-              <textarea id="cliente-motivo" required rows="2.5" placeholder="Describe el problema o arreglo..."
-                class="w-full px-3.5 py-3 rounded-xl bg-carbon-950 border border-zinc-800 text-white placeholder-zinc-500 focus:outline-none focus:border-brand transition text-xs sm:text-sm resize-none"></textarea>
-            </div>
-
-            <button type="submit"
-              class="w-full py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm tracking-wide uppercase transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2.5 hover:scale-[1.01]">
-              <i data-lucide="message-circle" class="w-4 h-4"></i>
-              <span>Enviar Turno por WhatsApp</span>
-            </button>
-            <p class="text-[10px] text-zinc-400 text-center">
-              Te responderemos enseguida para definir el día y la hora exacta de tu ingreso.
-            </p>
-          </form>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- SECCIÓN: PREGUNTAS FRECUENTES -->
-  <section id="preguntas" class="py-16 bg-carbon-900/35 border-y border-white/5">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <div class="text-center max-w-2xl mx-auto mb-10 reveal">
-        <span class="text-brand font-semibold text-xs tracking-widest uppercase">Dudas Comunes</span>
-        <h2 class="mt-2 font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">
-          Preguntas Frecuentes
-        </h2>
-        <p class="mt-2 text-zinc-400 text-xs sm:text-sm">
-          Todo lo que necesitas saber antes de traer tu vehículo al taller.
-        </p>
-      </div>
-
-      <div class="space-y-3 reveal">
-        <div class="faq-item spotlight-card rounded-xl overflow-hidden border border-white/10">
-          <button class="faq-btn w-full p-4 text-left font-display font-bold text-sm sm:text-base text-white flex items-center justify-between gap-4">
-            <span>¿Qué medios de pago aceptan en el taller?</span>
-            <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-zinc-400 transition-transform duration-300"></i>
-          </button>
-          <div class="faq-content hidden px-4 pb-4 text-xs sm:text-sm text-zinc-300 border-t border-white/5 pt-3 leading-relaxed">
-            Aceptamos efectivo, transferencias bancarias directas (CBU/CVU) y todas las tarjetas de débito y crédito. Consulta por planes de cuotas en reparaciones mayores.
-          </div>
-        </div>
-
-        <div class="faq-item spotlight-card rounded-xl overflow-hidden border border-white/10">
-          <button class="faq-btn w-full p-4 text-left font-display font-bold text-sm sm:text-base text-white flex items-center justify-between gap-4">
-            <span>¿Tienen garantía los trabajos realizados?</span>
-            <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-zinc-400 transition-transform duration-300"></i>
-          </button>
-          <div class="faq-content hidden px-4 pb-4 text-xs sm:text-sm text-zinc-300 border-t border-white/5 pt-3 leading-relaxed">
-            Sí, el 100% de nuestra mano de obra cuenta con garantía. Trabajamos exclusivamente con marcas de repuestos certificadas para garantizar durabilidad y seguridad.
-          </div>
-        </div>
-
-        <div class="faq-item spotlight-card rounded-xl overflow-hidden border border-white/10">
-          <button class="faq-btn w-full p-4 text-left font-display font-bold text-sm sm:text-base text-white flex items-center justify-between gap-4">
-            <span>¿Cuánto tiempo demora un service estándar de aceite y filtros?</span>
-            <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-zinc-400 transition-transform duration-300"></i>
-          </button>
-          <div class="faq-content hidden px-4 pb-4 text-xs sm:text-sm text-zinc-300 border-t border-white/5 pt-3 leading-relaxed">
-            Un service periódico suele realizarse en el transcurso de la mañana o de la tarde (aproximadamente 2 a 3 horas con turno previo), incluyendo la revisión de niveles y puntos de seguridad.
-          </div>
-        </div>
-
-        <div class="faq-item spotlight-card rounded-xl overflow-hidden border border-white/10">
-          <button class="faq-btn w-full p-4 text-left font-display font-bold text-sm sm:text-base text-white flex items-center justify-between gap-4">
-            <span>¿Puedo llevar yo mismo los repuestos para mi auto?</span>
-            <i data-lucide="chevron-down" class="faq-icon w-4 h-4 text-zinc-400 transition-transform duration-300"></i>
-          </button>
-          <div class="faq-content hidden px-4 pb-4 text-xs sm:text-sm text-zinc-300 border-t border-white/5 pt-3 leading-relaxed">
-            Por supuesto. Puedes traer tus propios repuestos o nosotros nos encargamos de cotizártelos y conseguirtelos con nuestros distribuidores oficiales a precios convenientes.
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECCIÓN: HORARIOS Y CONTACTO -->
-  <section id="contacto" class="py-16 bg-carbon-900/40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
-      <div class="text-center max-w-2xl mx-auto mb-10 reveal">
-        <span class="text-brand font-semibold text-xs tracking-widest uppercase">Canales Oficiales</span>
-        <h2 class="mt-2 font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">
-          Horarios y Contacto
-        </h2>
-        <p class="mt-2 text-zinc-400 text-xs sm:text-sm">
-          Te esperamos en nuestro taller en La Rioja para brindarte la mejor atención.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Horarios -->
-        <div class="spotlight-card p-5 rounded-xl flex flex-col justify-between border-brand/30 reveal">
-          <div>
-            <div class="w-10 h-10 rounded-lg bg-brand/10 text-brand flex items-center justify-center mb-4">
-              <i data-lucide="clock" class="w-5 h-5"></i>
-            </div>
-            <h3 class="font-display font-bold text-base text-white">Horarios de Atención</h3>
-            <p class="text-xs text-zinc-400 mt-0.5">Lunes a Sábado</p>
-            
-            <div class="mt-3 space-y-1.5 bg-carbon-950 p-2.5 rounded-lg border border-white/5">
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-zinc-400 font-medium">Mañana:</span>
-                <span class="text-white font-bold">08:00 a 13:00 hs</span>
-              </div>
-              <div class="flex items-center justify-between text-xs pt-1 border-t border-white/5">
-                <span class="text-zinc-400 font-medium">Tarde:</span>
-                <span class="text-white font-bold">17:00 a 21:00 hs</span>
-              </div>
-            </div>
-          </div>
-          <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand mt-4">
-            <span class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
-            <span>Atención en taller y turnos</span>
-          </span>
-        </div>
-
-        <!-- WhatsApp -->
-        <a href="https://wa.me/5493804374962" target="_blank" rel="noopener noreferrer"
-           class="spotlight-card p-5 rounded-xl transition-all group flex flex-col justify-between reveal">
-          <div>
-            <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <i data-lucide="phone-call" class="w-5 h-5"></i>
-            </div>
-            <h3 class="font-display font-bold text-base text-white">WhatsApp Oficial</h3>
-            <p class="text-xs text-zinc-400 mt-0.5">Consultas y presupuestos directos</p>
-            <p class="text-emerald-400 font-semibold text-sm sm:text-base mt-3">+54 9 3804 37-4962</p>
-          </div>
-          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-400 group-hover:text-white mt-4 transition-colors">
-            <span>Iniciar chat</span>
-            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-          </span>
-        </a>
-
-        <!-- Instagram -->
-        <a href="https://www.instagram.com/tallerangelleli/" target="_blank" rel="noopener noreferrer"
-           class="spotlight-card p-5 rounded-xl transition-all group flex flex-col justify-between reveal">
-          <div>
-            <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-yellow-500 via-rose-500 to-purple-600 text-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-md shadow-rose-500/20">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-              </svg>
-            </div>
-            <h3 class="font-display font-bold text-base text-white">Instagram Oficial</h3>
-            <p class="text-xs text-zinc-400 mt-0.5">Seguinos y mira nuestros trabajos</p>
-            <p class="text-rose-400 font-semibold text-sm sm:text-base mt-3">@tallerangelleli</p>
-          </div>
-          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-400 group-hover:text-white mt-4 transition-colors">
-            <span>Ver perfil en Instagram</span>
-            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-          </span>
-        </a>
-
-        <!-- Google Maps -->
-        <a href="https://www.google.com/maps/place/Taller+Angelelli/@-29.4200784,-66.8433088,498a,75y,18.3h,81.11t/data=!3m7!1e1!3m5!1s63N5DRYAoXt-54fnW-UB4Q!2e0!6shttps:%2F%2Fstreetviewpixels-pa.clients6.google.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D8.886424892586774%26panoid%3D63N5DRYAoXt-54fnW-UB4Q%26yaw%3D18.29844369155247!7i16384!8i8192!4m6!3m5!1s0x9427db005d014591:0xf3d1ffbb3212ace2!8m2!3d-29.4199983!4d-66.8432538!16s%2Fg%2F11x_c5pwfp?entry=ttu" 
-           target="_blank" rel="noopener noreferrer"
-           class="spotlight-card p-5 rounded-xl transition-all group flex flex-col justify-between reveal">
-          <div>
-            <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <i data-lucide="map-pin" class="w-5 h-5"></i>
-            </div>
-            <h3 class="font-display font-bold text-base text-white">¿Cómo llegar?</h3>
-            <p class="text-xs text-zinc-400 mt-0.5">Ubicación verificada</p>
-            <p class="text-blue-400 font-semibold text-sm sm:text-base mt-3">Taller Angelelli, La Rioja</p>
-          </div>
-          <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-400 group-hover:text-white mt-4 transition-colors">
-            <span>Abrir en Google Maps</span>
-            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-          </span>
-        </a>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="mt-auto bg-carbon-950 border-t border-white/10 py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3 text-center sm:text-left">
-        <img src="logo.jpg" alt="Logo" class="w-8 h-8 rounded-full object-cover border border-brand/50">
-        <div>
-          <p class="font-display font-bold text-white text-sm tracking-wide">
-            TALLER ANGELELLI
-          </p>
-          <p class="text-[11px] text-zinc-400 mt-0.5">
-            Mecánica general y servicios automotores con garantía • La Rioja
-          </p>
-        </div>
-      </div>
-
-      <div class="text-center py-1.5 px-3 rounded-full bg-carbon-900 border border-white/10 shadow-sm">
-        <span class="text-[11px] text-zinc-400">Creado por </span>
-        <span class="text-[11px] font-extrabold tracking-wider text-brand">G.A. CENTER</span>
-      </div>
-
-      <div>
-        <button id="btn-abrir-admin" 
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-zinc-500 hover:text-zinc-300 hover:bg-carbon-900 transition-colors border border-transparent hover:border-zinc-800">
-          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-          <span>Admin</span>
+        <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-brand-500/30 transition">
+          Ingresar al Sistema
         </button>
-      </div>
-    </div>
-  </footer>
+      </form>
 
-  <!-- BOTÓN FLOTANTE WHATSAPP -->
-  <a href="https://wa.me/5493804374962?text=Hola%20Taller%20Angelelli,%20quiero%20hacer%20una%20consulta" 
-     target="_blank" rel="noopener noreferrer"
-     class="fixed bottom-5 right-5 z-40 w-12 h-12 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white flex items-center justify-center shadow-2xl shadow-emerald-500/40 hover:scale-110 transition-all duration-300"
-     aria-label="Contactar por WhatsApp">
-    <i data-lucide="message-circle" class="w-6 h-6"></i>
-  </a>
-
-  <!-- MODAL: FICHA TÉCNICA DETALLADA (LIGHTBOX) -->
-  <div id="modal-detalle-auto" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-carbon-900 border border-white/15 rounded-2xl w-full max-w-xl overflow-hidden shadow-2xl flex flex-col">
-      <div class="relative h-60 sm:h-72 w-full overflow-hidden bg-carbon-950">
-        <img id="modal-detalle-img" src="" alt="Vehículo" class="w-full h-full object-cover">
-        <div class="absolute inset-0 bg-gradient-to-t from-carbon-900 via-transparent to-transparent"></div>
-        <button id="btn-cerrar-detalle" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/70 backdrop-blur-md text-white flex items-center justify-center hover:bg-brand transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <div class="p-5 sm:p-6 space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="px-2.5 py-0.5 rounded-full bg-brand/15 border border-brand/30 text-brand text-[11px] font-bold uppercase tracking-wider">
-            Trabajo Entregado
-          </span>
-          <span id="modal-detalle-fecha" class="text-[11px] text-zinc-400 font-mono"></span>
-        </div>
-        <h3 id="modal-detalle-titulo" class="font-display font-black text-xl sm:text-2xl text-white uppercase tracking-tight"></h3>
-        <p id="modal-detalle-desc" class="text-zinc-300 text-xs sm:text-sm leading-relaxed"></p>
-
-        <div class="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div class="text-xs text-emerald-400 font-semibold flex items-center gap-1.5">
-            <i data-lucide="badge-check" class="w-4 h-4"></i>
-            <span>Garantía Taller Angelelli</span>
-          </div>
-          <a id="modal-detalle-btn-wa" href="#" target="_blank"
-             class="w-full sm:w-auto px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2">
-            <i data-lucide="message-circle" class="w-4 h-4"></i>
-            <span>Consultar por este trabajo</span>
-          </a>
-        </div>
+      <div class="mt-6 pt-4 border-t border-white/5 text-[11px] text-zinc-500">
+        Creado por <strong class="text-zinc-400">A. G. Center</strong>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: PANEL DE ADMINISTRACIÓN -->
-  <div id="modal-admin" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-carbon-900 border border-white/15 rounded-2xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-      
-      <div class="p-5 border-b border-white/10 flex items-center justify-between bg-carbon-850">
+  <!-- PANEL DE CONTROL -->
+  <div id="contenido-taller" class="hidden flex-col min-h-screen">
+
+    <header class="fixed top-0 inset-x-0 z-40 bg-dark-950/85 backdrop-blur-xl border-b border-white/10 no-print">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between relative z-20">
+        
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-full bg-dark-900 border border-brand-500/40 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 overflow-hidden shrink-0">
+            <img src="logo.jpg" alt="Taller Angelelli" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="hidden w-full h-full items-center justify-center bg-gradient-to-tr from-brand-600 to-brand-500">
+              <i data-lucide="wrench" class="w-6 h-6"></i>
+            </div>
+          </div>
+          <div>
+            <span class="font-display font-bold text-lg sm:text-xl tracking-tight text-white block leading-none">
+              TALLER <span class="text-brand-500">ANGELELLI</span>
+            </span>
+            <span class="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest block mt-1">
+              La Rioja • Cloud Database
+            </span>
+          </div>
+        </div>
+
         <div class="flex items-center gap-3">
-          <img src="logo.jpg" alt="Logo" class="w-7 h-7 rounded-full border border-brand">
-          <div>
-            <h3 class="font-display font-bold text-base text-white">Panel de Administración</h3>
-            <p class="text-[11px] text-zinc-400">Control de Trabajos y Publicaciones</p>
-          </div>
-        </div>
-        <button id="btn-cerrar-admin" class="text-zinc-400 hover:text-white p-1.5 rounded-lg hover:bg-carbon-800 transition">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-
-      <!-- Vista 1: Login -->
-      <div id="vista-login-admin" class="p-8 text-center">
-        <div class="w-12 h-12 rounded-xl bg-carbon-800 border border-white/10 text-brand flex items-center justify-center mx-auto mb-3">
-          <i data-lucide="lock" class="w-6 h-6"></i>
-        </div>
-        <h4 class="font-display font-bold text-lg text-white">Acceso Restringido</h4>
-        <p class="text-xs text-zinc-400 mt-1 max-w-sm mx-auto">Ingresa tu contraseña de administrador para publicar, editar o eliminar autos.</p>
-
-        <form id="form-login-admin" class="mt-5 max-w-xs mx-auto space-y-3">
-          <div>
-            <input type="password" id="input-password-admin" placeholder="Contraseña..." required
-                   class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-zinc-700 text-white text-center tracking-widest text-sm focus:border-brand focus:outline-none">
-          </div>
-          <button type="submit"
-                  class="w-full py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white font-bold text-xs tracking-wide uppercase transition shadow-lg shadow-brand/20">
-            Ingresar al Panel
+          <button id="btn-open-nuevo-auto" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white text-xs font-extrabold uppercase tracking-wider shadow-lg shadow-brand-500/30 transition-all hover:scale-105">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Registrar Nuevo Auto</span>
           </button>
-          <p id="error-password-admin" class="text-xs text-red-400 hidden">Contraseña incorrecta. Inténtalo de nuevo.</p>
-        </form>
+        </div>
+
+      </div>
+    </header>
+
+    <main class="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full flex-1 relative z-20 no-print">
+      
+      <div class="mb-8 p-6 sm:p-8 rounded-3xl glass-card border border-white/10 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6 reveal">
+        <div class="relative z-10">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-500 text-xs font-semibold mb-3">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Sincronizado con Firebase Cloud Firestore</span>
+          </div>
+          <h1 class="font-display font-black text-2xl sm:text-4xl text-white uppercase tracking-tight">
+            Control de Trabajos y Mantenimiento
+          </h1>
+          <p class="text-xs sm:text-sm text-zinc-400 mt-2 max-w-xl leading-relaxed">
+            Gestión en tiempo real de vehículos, historial de visitas y almacenamiento de fotografías en la nube.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 sm:gap-4 w-full lg:w-auto shrink-0 relative z-10">
+          <div class="text-center p-3.5 sm:p-4 rounded-2xl bg-dark-950 border border-white/5">
+            <span id="stat-total-autos" class="block font-display font-black text-xl sm:text-3xl text-white">0</span>
+            <span class="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Vehículos</span>
+          </div>
+          <div class="text-center p-3.5 sm:p-4 rounded-2xl bg-dark-950 border border-white/5">
+            <span id="stat-total-arreglos" class="block font-display font-black text-xl sm:text-3xl text-brand-500">0</span>
+            <span class="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Arreglos</span>
+          </div>
+          <div class="text-center p-3.5 sm:p-4 rounded-2xl bg-dark-950 border border-white/5">
+            <span id="stat-total-fotos" class="block font-display font-black text-xl sm:text-3xl text-emerald-400">0</span>
+            <span class="text-[9px] sm:text-[10px] text-zinc-500 font-bold uppercase tracking-wider">Fotos Cloud</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Vista 2: Gestión -->
-      <div id="vista-gestion-admin" class="p-5 overflow-y-auto space-y-6 hidden">
-        <div class="p-4 rounded-xl bg-carbon-850 border border-white/5 space-y-3">
-          <div class="flex items-center justify-between">
-            <h4 id="titulo-form-admin" class="font-display font-bold text-sm text-white flex items-center gap-2">
-              <i data-lucide="plus-circle" class="w-4 h-4 text-brand"></i>
-              <span>Publicar Nuevo Trabajo</span>
-            </h4>
-            <button type="button" id="btn-cancelar-edicion" class="hidden text-[11px] text-zinc-400 hover:text-white px-2.5 py-1 rounded bg-carbon-950 border border-white/10">
-              Cancelar Edición
-            </button>
+      <div class="mb-8 grid grid-cols-1 md:grid-cols-12 gap-4 reveal">
+        <div class="relative md:col-span-8">
+          <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"></i>
+          <input type="text" id="panel-search-input" placeholder="Buscar por Patente (ej: AA123BC), Cliente o Modelo..." 
+                 class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-dark-900 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500 text-xs sm:text-sm transition shadow-2xl">
+        </div>
+
+        <div class="relative md:col-span-4 flex items-center gap-2">
+          <div class="relative w-full">
+            <i data-lucide="calendar" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-500"></i>
+            <select id="filter-fecha-ingreso" class="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-dark-900 border border-white/10 text-white text-xs sm:text-sm focus:outline-none focus:border-brand-500 transition">
+              <option value="todos">Filtrar por Fecha de Ingreso</option>
+            </select>
           </div>
+          <button id="btn-reset-filtros" title="Limpiar filtros" class="p-3.5 rounded-2xl bg-dark-850 hover:bg-dark-800 border border-white/10 text-zinc-400 hover:text-white transition">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
 
-          <form id="form-nuevo-trabajo" class="space-y-3">
-            <div>
-              <label class="block text-[11px] font-semibold text-zinc-300 uppercase mb-1">Vehículo (Marca y Modelo)</label>
-              <input type="text" id="admin-vehiculo" required placeholder="Ej: Volkswagen Amarok 2.0 TDI"
-                     class="w-full px-3 py-2 rounded-lg bg-carbon-950 border border-zinc-800 text-white text-xs focus:border-brand focus:outline-none">
+      <div id="grid-autos-panel" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+      <div id="no-results-panel" class="hidden text-center py-20 glass-card rounded-3xl max-w-md mx-auto my-12">
+        <div class="w-16 h-16 rounded-full bg-dark-800 text-brand-500 flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="car-front" class="w-8 h-8"></i>
+        </div>
+        <h3 class="font-display font-bold text-base text-white">Sin registros coincidentes</h3>
+        <p class="text-zinc-400 text-xs mt-2 px-6">No se encontraron autos en Firebase para la búsqueda realizada.</p>
+      </div>
+
+    </main>
+
+    <footer class="bg-dark-950 border-t border-white/10 py-6 px-4 relative z-25 no-print">
+      <div class="max-w-7xl mx-auto flex items-center justify-center text-center">
+        <p class="text-xs font-semibold text-zinc-400 tracking-wider">
+          Creado por <span class="text-white font-bold">A. G. Center</span>
+        </p>
+      </div>
+    </footer>
+
+    <!-- MODAL REGISTRO -->
+    <div id="modal-nuevo-auto" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-md hidden items-center justify-center p-4 no-print">
+      <div class="bg-dark-900 border border-white/15 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] mx-auto">
+        
+        <div class="p-5 border-b border-white/10 flex items-center justify-between bg-dark-850">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-brand-500/20 text-brand-500 flex items-center justify-center">
+              <i id="modal-icon-title" data-lucide="upload-cloud" class="w-5 h-5"></i>
             </div>
-
             <div>
-              <label class="block text-[11px] font-semibold text-zinc-300 uppercase mb-1">Fecha de Entrega</label>
-              <input type="date" id="admin-fecha" required
-                     class="w-full px-3 py-2 rounded-lg bg-carbon-950 border border-zinc-800 text-white text-xs focus:border-brand focus:outline-none">
+              <h3 id="modal-title-text" class="font-display font-bold text-base text-white">Cargar Vehículo a Firebase</h3>
+              <p class="text-[11px] text-zinc-400">Ingresa la patente, fechas de ingreso y repuestos cambiados</p>
             </div>
+          </div>
+          <button id="btn-close-modal-nuevo" class="text-zinc-400 hover:text-white p-2 rounded-xl hover:bg-dark-800 transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
 
-            <div>
-              <label class="block text-[11px] font-semibold text-zinc-300 uppercase mb-1">Descripción del Arreglo Realizado</label>
-              <textarea id="admin-descripcion" required rows="2" placeholder="Ej: Cambio de kit de distribución y service completo..."
-                        class="w-full px-3 py-2 rounded-lg bg-carbon-950 border border-zinc-800 text-white text-xs focus:border-brand focus:outline-none resize-none"></textarea>
-            </div>
-
-            <div>
-              <label class="block text-[11px] font-semibold text-zinc-300 uppercase mb-1">Foto del Auto Terminado</label>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <label class="border-2 border-dashed border-zinc-700 hover:border-brand rounded-xl p-2.5 text-center cursor-pointer flex flex-col items-center justify-center bg-carbon-950 transition">
-                  <i data-lucide="upload" class="w-4 h-4 text-zinc-400 mb-1"></i>
-                  <span class="text-[11px] font-medium text-zinc-300">Elegir foto (Celular/PC)</span>
-                  <input type="file" id="admin-foto-file" accept="image/*" class="hidden">
+        <div class="p-6 overflow-y-auto custom-scrollbar space-y-5">
+          <form id="form-nuevo-auto" class="space-y-4">
+            <input type="hidden" id="edit-auto-id" value="">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">
+                  Patente (Argentina) *
                 </label>
-                <div>
-                  <input type="url" id="admin-foto-url" placeholder="O pegar enlace web (https://...)"
-                         class="w-full h-full px-3 py-2 rounded-xl bg-carbon-950 border border-zinc-800 text-white text-[11px] focus:border-brand focus:outline-none">
+                <div class="relative">
+                  <input type="text" id="input-patente" required placeholder="EJ: AA123BC" maxlength="9"
+                         class="w-full px-4 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white font-mono uppercase font-bold text-xs focus:border-brand-500 focus:outline-none transition">
+                  <span id="badge-tipo-patente" class="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-bold px-1 rounded bg-dark-800 text-zinc-400">A/B</span>
                 </div>
               </div>
 
-              <div id="contenedor-preview" class="hidden mt-2 p-2 bg-carbon-950 rounded-lg border border-white/5 flex items-center gap-3">
-                <img id="img-preview" src="" alt="Vista previa" class="w-12 h-9 object-cover rounded border border-white/10">
-                <span class="text-[11px] text-zinc-400 truncate flex-1">Imagen cargada</span>
-                <button type="button" id="btn-quitar-foto" class="text-red-400 hover:text-red-300 text-xs px-2 py-1">Quitar</button>
+              <div>
+                <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Cliente / Dueño *</label>
+                <input type="text" id="input-cliente" required placeholder="EJ: Juan Pérez" 
+                       class="w-full px-4 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white text-xs focus:border-brand-500 focus:outline-none transition">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Fecha de Ingreso *</label>
+                <input type="date" id="input-fecha" required 
+                       class="w-full px-3 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white text-xs focus:border-brand-500 focus:outline-none transition">
               </div>
             </div>
 
-            <button type="submit" id="btn-guardar-trabajo"
-                    class="w-full py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-lg shadow-brand/20">
-              <i data-lucide="check" class="w-4 h-4"></i>
-              <span>Publicar Auto en la Web</span>
-            </button>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Modelo y Marca *</label>
+                <input type="text" id="input-modelo" required placeholder="EJ: Volkswagen Amarok 2.0 TDI" 
+                       class="w-full px-4 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white text-xs focus:border-brand-500 focus:outline-none transition">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Monto del Trabajo ($)</label>
+                <input type="number" id="input-monto" placeholder="EJ: 125000" 
+                       class="w-full px-4 py-3 rounded-xl bg-dark-950 border border-zinc-800 text-white text-xs focus:border-brand-500 focus:outline-none transition">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Repuestos y Cosas Mecánicas Cambiadas *</label>
+              <div class="flex gap-2 mb-3">
+                <input type="text" id="input-item-arreglo" placeholder="EJ: Cambio de kit de distribución y bomba de agua" 
+                       class="flex-1 px-4 py-2.5 rounded-xl bg-dark-950 border border-zinc-800 text-white text-xs focus:border-brand-500 focus:outline-none">
+                <button type="button" id="btn-add-item" class="px-4 py-2.5 rounded-xl bg-dark-800 hover:bg-dark-700 text-white text-xs font-bold transition">
+                  Agregar
+                </button>
+              </div>
+              <ul id="lista-arreglos-temp" class="space-y-2 min-h-[50px] p-3 rounded-xl bg-dark-950 border border-zinc-850">
+                <li class="text-zinc-600 text-xs italic text-center py-2" id="msg-sin-items">Ningún trabajo o repuesto agregado aún</li>
+              </ul>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-2">Fotografías del Vehículo y Piezas *</label>
+              <div class="border-2 border-dashed border-zinc-800 hover:border-brand-500/50 rounded-2xl p-5 text-center bg-dark-950 transition cursor-pointer" id="drop-zone">
+                <i data-lucide="image-plus" class="w-7 h-7 text-zinc-500 mx-auto mb-2"></i>
+                <p class="text-xs text-zinc-300 font-semibold">Selecciona o arrastra las imágenes aquí</p>
+                <input type="file" id="input-fotos" multiple accept="image/*" class="hidden">
+              </div>
+              <div id="preview-fotos" class="grid grid-cols-4 gap-2 mt-3"></div>
+            </div>
+
+            <div class="pt-4 border-t border-white/10 flex items-center justify-end gap-3">
+              <button type="button" id="btn-cancel-modal-nuevo" class="px-5 py-2.5 rounded-xl bg-dark-850 text-zinc-300 text-xs font-semibold hover:bg-dark-800 transition">
+                Cancelar
+              </button>
+              <button type="submit" id="btn-submit-auto" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-brand-500/25 transition">
+                Guardar en la Nube
+              </button>
+            </div>
+
           </form>
         </div>
 
-        <div>
-          <h4 class="font-display font-bold text-sm text-white mb-2.5 flex items-center gap-2">
-            <i data-lucide="list" class="w-4 h-4 text-brand"></i>
-            <span>Trabajos Publicados</span>
-          </h4>
-          <div id="lista-admin-trabajos" class="space-y-2.5">
-            <p class="text-xs text-zinc-500">Cargando lista...</p>
+      </div>
+    </div>
+
+    <!-- MODAL DETALLE / IMPRESIÓN -->
+    <div id="modal-detalle-auto" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-md hidden items-center justify-center p-3">
+      <div id="modal-detalle-card" class="bg-dark-900 border border-white/15 rounded-3xl w-full max-w-4xl overflow-hidden shadow-2xl flex flex-col max-h-[92vh] mx-auto relative">
+        
+        <!-- MARCA DE AGUA DE FONDO PARA LA IMPRESIÓN -->
+        <div id="print-watermark" class="hidden">
+          <img src="logo.jpg" alt="" class="w-96 h-96 object-contain opacity-[0.06]">
+        </div>
+
+        <!-- ENCABEZADO EXCLUSIVO DE IMPRESIÓN CON LOGO -->
+        <div class="print-only items-center justify-between px-6 py-4 border-b border-gray-300 relative z-10">
+          <div class="flex items-center gap-3.5">
+            <img src="logo.jpg" alt="Logo Taller Angelelli" class="w-16 h-16 rounded-full object-cover border border-gray-300">
+            <div>
+              <h2 class="font-display font-black text-xl tracking-tight text-gray-900 uppercase">TALLER ANGELELLI</h2>
+              <p class="text-xs text-gray-600 font-semibold uppercase tracking-widest">Servicio Mecánico Especializado • La Rioja</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-bold uppercase tracking-wider text-gray-500 block">Ficha Técnica de Vehículo</span>
           </div>
         </div>
-      </div>
 
+        <div class="p-5 border-b border-white/10 flex items-center justify-between bg-dark-850 relative z-10">
+          <div class="flex items-center gap-3">
+            <span id="detail-patente-badge" class="patent-badge-arg px-3 py-1.5 rounded-lg text-white font-bold text-sm tracking-widest border border-white/20"></span>
+            <div>
+              <h3 id="detail-modelo" class="font-display font-extrabold text-base sm:text-lg text-white"></h3>
+              <p id="detail-cliente" class="text-xs text-zinc-400"></p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 no-print">
+            <button id="btn-print-ficha" class="p-2 rounded-xl text-zinc-300 hover:bg-dark-800 transition flex items-center gap-1.5 text-xs font-semibold px-3" title="Imprimir o Guardar PDF">
+              <i data-lucide="printer" class="w-4 h-4 text-brand-500"></i>
+              <span class="hidden sm:inline">Imprimir</span>
+            </button>
+            <button id="btn-eliminar-auto" class="p-2 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition" title="Eliminar de Firebase">
+              <i data-lucide="trash-2" class="w-5 h-5"></i>
+            </button>
+            <button id="btn-close-detail" class="text-zinc-400 hover:text-white p-2 rounded-xl hover:bg-dark-800 transition">
+              <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="modal-detalle-body" class="p-6 overflow-y-auto custom-scrollbar space-y-6 relative z-10">
+          <div>
+            <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider block mb-3">Fotografía del Vehículo</span>
+            <div class="relative rounded-2xl overflow-hidden bg-dark-950 aspect-video mb-3 border border-white/10 max-h-[340px] mx-auto">
+              <img id="detail-active-img" src="" class="w-full h-full object-cover transition-all duration-500">
+            </div>
+            <div id="detail-thumbs" class="flex gap-3 overflow-x-auto pb-2 custom-scrollbar no-print"></div>
+          </div>
+
+          <div class="glass-card p-5 rounded-2xl border border-white/5">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold text-brand-500 uppercase tracking-wider">Cosas Mecánicas / Reparaciones / Repuestos</span>
+              <span id="detail-monto" class="text-sm font-extrabold text-emerald-400"></span>
+            </div>
+            <ul id="detail-lista-arreglos" class="space-y-2.5"></ul>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 text-xs text-zinc-500 border-t border-white/5">
+            <span>Fecha de Ingreso al Taller: <strong id="detail-fecha" class="text-zinc-300"></strong></span>
+            <span class="text-emerald-400 font-semibold flex items-center gap-1">
+              <i data-lucide="check-circle" class="w-4 h-4"></i> Mantenimiento Certificado
+            </span>
+          </div>
+        </div>
+
+      </div>
     </div>
+
   </div>
 
-  <!-- SCRIPT PRINCIPAL -->
-  <script>
-    const SUPABASE_URL = "https://eurqojdpcggjsjrxddfg.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_gDde6ZNt8lbwARuwPz8Uiw_SNoPzjRi";
-    const TABLA_NAME = "angelelli_trabajos";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    const { createClient } = supabase;
-    const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfI68v1CLgkhA0KJ_57gC7m1SlRyPSE6g",
+      authDomain: "paneltallerangelelli.firebaseapp.com",
+      projectId: "paneltallerangelelli",
+      storageBucket: "paneltallerangelelli.firebasestorage.app",
+      messagingSenderId: "1754873670",
+      appId: "1:1754873670:web:d6f08ef0af38d076bbaf47",
+      measurementId: "G-8P1BM148XN"
+    };
 
-    const ADMIN_PASSWORD_CORRECTA = "TA2026";
-    let imagenBase64Procesada = null;
-    let trabajoIdEnEdicion = null;
-    let trabajosCargadosEnMemoria = [];
-    let busquedaActiva = "";
-    let paginaActual = 1;
-    const ITEMS_POR_PAGINA = 9;
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    // Control de Menú Hamburguesa Móvil
-    const btnMenuMovil = document.getElementById("btn-menu-movil");
-    const menuMovil = document.getElementById("menu-movil");
+    const PASSWORD_CORRECTA = "TallerArch";
+    let dbAutos = [];
+    let tempArreglos = [];
+    let tempFotosBase64 = [];
+    let autoSeleccionadoId = null;
 
-    btnMenuMovil.addEventListener("click", () => {
-      menuMovil.classList.toggle("hidden");
-    });
-
-    document.querySelectorAll(".link-movil").forEach(link => {
-      link.addEventListener("click", () => {
-        menuMovil.classList.add("hidden");
-      });
-    });
-
-    function mostrarToast(mensaje, tipo = "exito") {
-      const container = document.getElementById("toast-container");
-      const toast = document.createElement("div");
-      
-      const bgColor = tipo === "exito" ? "bg-emerald-600/90 border-emerald-500/40" : "bg-red-600/90 border-red-500/40";
-      const icon = tipo === "exito" ? "check-circle" : "alert-triangle";
-
-      toast.className = `flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl ${bgColor} border backdrop-blur-md text-white text-xs font-semibold shadow-2xl transition-all duration-300 pointer-events-auto transform translate-y-2 opacity-0`;
-      toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4"></i><span>${mensaje}</span>`;
-      
-      container.appendChild(toast);
+    document.addEventListener("DOMContentLoaded", () => {
       lucide.createIcons();
+      initCursorLight();
 
-      requestAnimationFrame(() => {
-        toast.classList.remove("translate-y-2", "opacity-0");
+      const formLogin = document.getElementById("form-login");
+      const inputPass = document.getElementById("input-password");
+      const errorLogin = document.getElementById("error-login");
+      const pantallaLogin = document.getElementById("pantalla-login");
+      const contenidoTaller = document.getElementById("contenido-taller");
+
+      formLogin.onsubmit = async (e) => {
+        e.preventDefault();
+        if (inputPass.value === PASSWORD_CORRECTA) {
+          pantallaLogin.classList.add("hidden");
+          contenidoTaller.classList.remove("hidden");
+          contenidoTaller.classList.add("flex");
+          
+          await cargarAutosDesdeFirebase();
+          initScrollReveal();
+          setupEventListeners();
+          lucide.createIcons();
+        } else {
+          errorLogin.classList.remove("hidden");
+          inputPass.value = "";
+        }
+      };
+    });
+
+    function initCursorLight() {
+      const cursorLight = document.getElementById("cursor-light");
+      window.addEventListener("mousemove", (e) => {
+        cursorLight.style.left = `${e.clientX}px`;
+        cursorLight.style.top = `${e.clientY}px`;
       });
-
-      setTimeout(() => {
-        toast.classList.add("translate-y-2", "opacity-0");
-        setTimeout(() => toast.remove(), 300);
-      }, 4000);
     }
 
-    function actualizarEstadoTaller() {
-      const ahora = new Date();
-      const horaArgentina = new Date(ahora.toLocaleString("en-US", { timeZone: "America/Argentina/La_Rioja" }));
-      const dia = horaArgentina.getDay();
-      const hora = horaArgentina.getHours();
-      const minutos = horaArgentina.getMinutes();
-      const tiempoActual = hora + minutos / 60;
-
-      const dot = document.getElementById("dot-estado");
-      const texto = document.getElementById("texto-estado");
-      const textoMovil = document.getElementById("texto-estado-movil");
-      const navBadge = document.getElementById("estado-taller-nav");
-
-      const esDiaLaboral = dia >= 1 && dia <= 6;
-      const abiertoManana = tiempoActual >= 8.0 && tiempoActual < 13.0;
-      const abiertoTarde = tiempoActual >= 17.0 && tiempoActual < 21.0;
-
-      if (esDiaLaboral && (abiertoManana || abiertoTarde)) {
-        if(dot) dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-        if(texto) texto.innerText = "Abierto Ahora";
-        if(textoMovil) textoMovil.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block mr-1"></span> Abierto Ahora`;
-        if(navBadge) {
-          navBadge.classList.remove("border-red-500/30");
-          navBadge.classList.add("border-emerald-500/30");
-        }
-      } else {
-        let msgCerrado = "Cerrado";
-        if (esDiaLaboral && tiempoActual < 8.0) msgCerrado = "Abre hoy 08:00 hs";
-        else if (esDiaLaboral && tiempoActual >= 13.0 && tiempoActual < 17.0) msgCerrado = "Abre hoy 17:00 hs";
-        else msgCerrado = "Cerrado por hoy";
-
-        if(dot) dot.className = "w-2 h-2 rounded-full bg-red-500";
-        if(texto) texto.innerText = msgCerrado;
-        if(textoMovil) textoMovil.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500 inline-block mr-1"></span> ${msgCerrado}`;
-        if(navBadge) {
-          navBadge.classList.remove("border-emerald-500/30");
-          navBadge.classList.add("border-red-500/30");
-        }
-      }
-    }
-
-    async function cargarTrabajos() {
-      const contador = document.getElementById("contador-trabajos");
-
+    async function cargarAutosDesdeFirebase() {
       try {
-        const { data, error } = await db
-          .from(TABLA_NAME)
-          .select("*")
-          .order("created_at", { ascending: false });
-
-        if (error) throw error;
-
-        trabajosCargadosEnMemoria = data || [];
-        renderizarGridFiltrado();
-        renderizarListaAdmin(trabajosCargadosEnMemoria);
-
-      } catch (err) {
-        console.error("Error al cargar trabajos:", err);
-        if(contador) contador.innerText = "Modo demostración";
-        renderizarGridFiltrado();
+        const querySnapshot = await getDocs(collection(db, "autos_taller"));
+        dbAutos = [];
+        querySnapshot.forEach((docSnap) => {
+          dbAutos.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        renderGridAutos(dbAutos);
+        actualizarEstadisticas();
+        poblarFiltroFechas();
+      } catch (e) {
+        console.error("Error al cargar datos desde Firebase:", e);
       }
     }
 
-    function renderizarGridFiltrado() {
-      const grid = document.getElementById("grid-trabajos");
-      const estadoVacio = document.getElementById("estado-vacio");
-      const contador = document.getElementById("contador-trabajos");
-      const contenedorPaginacion = document.getElementById("paginacion-trabajos");
+    function actualizarEstadisticas() {
+      const statAutos = document.getElementById("stat-total-autos");
+      const statArreglos = document.getElementById("stat-total-arreglos");
+      const statFotos = document.getElementById("stat-total-fotos");
 
-      const filtrados = trabajosCargadosEnMemoria.filter(item => {
-        return (
-          item.vehiculo.toLowerCase().includes(busquedaActiva) ||
-          item.descripcion.toLowerCase().includes(busquedaActiva)
-        );
+      statAutos.innerText = dbAutos.length;
+      
+      let totalArreglos = 0;
+      let totalFotos = 0;
+
+      dbAutos.forEach(a => {
+        totalArreglos += (a.arreglos ? a.arreglos.length : 0);
+        totalFotos += (a.fotos ? a.fotos.length : 0);
       });
 
-      if(!grid) return;
+      statArreglos.innerText = totalArreglos;
+      statFotos.innerText = totalFotos;
+    }
+
+    function poblarFiltroFechas() {
+      const select = document.getElementById("filter-fecha-ingreso");
+      const fechasUnicas = [...new Set(dbAutos.map(a => a.fecha))].sort().reverse();
+      
+      select.innerHTML = `<option value="todos">Filtrar por Fecha de Ingreso</option>`;
+      
+      fechasUnicas.forEach(f => {
+        if(f) {
+          const opt = document.createElement("option");
+          opt.value = f;
+          opt.innerText = `Ingreso: ${f}`;
+          select.appendChild(opt);
+        }
+      });
+    }
+
+    function renderGridAutos(data) {
+      const grid = document.getElementById("grid-autos-panel");
+      const noRes = document.getElementById("no-results-panel");
       grid.innerHTML = "";
 
-      if (filtrados.length === 0) {
-        if(estadoVacio) estadoVacio.classList.remove("hidden");
-        if(contador) contador.innerText = `0 de ${trabajosCargadosEnMemoria.length} trabajos`;
-        if(contenedorPaginacion) contenedorPaginacion.innerHTML = "";
+      if (data.length === 0) {
+        noRes.classList.remove("hidden");
         return;
       }
+      noRes.classList.add("hidden");
 
-      if(estadoVacio) estadoVacio.classList.add("hidden");
-
-      const totalPaginas = Math.ceil(filtrados.length / ITEMS_POR_PAGINA) || 1;
-      if (paginaActual > totalPaginas) paginaActual = totalPaginas;
-      if (paginaActual < 1) paginaActual = 1;
-
-      const inicio = (paginaActual - 1) * ITEMS_POR_PAGINA;
-      const fin = inicio + ITEMS_POR_PAGINA;
-      const itemsPagina = filtrados.slice(inicio, fin);
-
-      if(contador) {
-        contador.innerText = `Mostrando ${itemsPagina.length} de ${filtrados.length} (Pág. ${paginaActual}/${totalPaginas})`;
-      }
-
-      itemsPagina.forEach(item => {
+      data.forEach(auto => {
         const card = document.createElement("div");
-        card.className = "spotlight-card rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between cursor-pointer reveal active";
-        
-        card.onclick = () => abrirDetalleModal(item);
+        card.className = "glass-card rounded-3xl overflow-hidden flex flex-col justify-between cursor-pointer reveal active";
+        card.onclick = () => abrirDetalleModal(auto);
+
+        const fotoPrincipal = (auto.fotos && auto.fotos.length > 0) ? auto.fotos[0] : "https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1000&q=80";
 
         card.innerHTML = `
           <div>
-            <div class="relative h-40 sm:h-56 w-full overflow-hidden bg-carbon-950">
-              <img src="${item.imagen_url}" alt="${item.vehiculo}" 
-                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                   loading="lazy"
-                   onerror="this.src='logo.jpg'">
-              <div class="absolute inset-0 bg-gradient-to-t from-carbon-950 via-transparent to-transparent opacity-85"></div>
-              
-              <div class="absolute top-2 right-2 px-2 py-0.5 rounded bg-carbon-950/80 backdrop-blur-md border border-brand/40 text-[10px] font-bold uppercase text-brand tracking-wider">
-                Ver Ficha
+            <div class="relative h-48 w-full overflow-hidden bg-dark-950">
+              <img src="${fotoPrincipal}" alt="${auto.modelo}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-80"></div>
+              <div class="absolute top-3 left-3 flex items-center gap-2">
+                <span class="patent-badge-arg px-3 py-1 rounded-lg text-white font-bold text-xs tracking-widest">
+                  ${auto.patente}
+                </span>
               </div>
             </div>
 
-            <div class="p-3 sm:p-4">
-              <h3 class="font-display font-black text-sm sm:text-lg text-white uppercase tracking-tight group-hover:text-brand transition-colors line-clamp-1">
-                ${escapeHtml(item.vehiculo)}
-              </h3>
-              <p class="mt-1 text-zinc-300 text-xs leading-relaxed line-clamp-2">
-                ${escapeHtml(item.descripcion)}
+            <div class="p-5">
+              <h3 class="font-display font-bold text-base text-white leading-snug">${auto.modelo}</h3>
+              <p class="text-xs text-zinc-400 mt-1 flex items-center justify-between">
+                <span class="flex items-center gap-1">
+                  <i data-lucide="user" class="w-3.5 h-3.5 text-zinc-500"></i>
+                  ${auto.cliente}
+                </span>
+                <span class="text-[11px] font-semibold text-brand-500 bg-brand-500/10 px-2 py-0.5 rounded-md border border-brand-500/20">
+                  📅 ${auto.fecha}
+                </span>
               </p>
+
+              <div class="mt-4 pt-3 border-t border-white/5">
+                <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-1.5">Repuestos e intervenciones:</span>
+                <ul class="space-y-1">
+                  ${auto.arreglos ? auto.arreglos.slice(0, 2).map(arr => `
+                    <li class="text-xs text-zinc-300 flex items-start gap-2">
+                      <i data-lucide="check" class="w-3.5 h-3.5 text-brand-500 shrink-0 mt-0.5"></i>
+                      <span class="truncate">${arr}</span>
+                    </li>
+                  `).join('') : ''}
+                </ul>
+                ${auto.arreglos && auto.arreglos.length > 2 ? `<span class="text-[10px] text-brand-500 font-semibold mt-1.5 block">+${auto.arreglos.length - 2} ítems más</span>` : ''}
+              </div>
             </div>
           </div>
 
-          <div class="px-3 pb-3 sm:px-4 sm:pb-4 pt-1 border-t border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
-            <span class="inline-flex items-center gap-1 text-emerald-400 font-medium">
-              <i data-lucide="shield-check" class="w-3 h-3"></i> Garantizado
-            </span>
-            <span class="text-zinc-400 group-hover:text-white transition flex items-center gap-0.5">
-              <span>Detalles</span>
-              <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          <div class="px-5 pb-4 pt-2 flex items-center justify-between text-[11px] text-zinc-500 border-t border-white/5">
+            <span class="text-emerald-400 font-semibold">${auto.monto ? `$ ${Number(auto.monto).toLocaleString("es-AR")}` : 'Sin costo reg.'}</span>
+            <span class="text-white font-semibold flex items-center gap-1 hover:text-brand-500 transition-colors">
+              Ver Ficha
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
             </span>
           </div>
         `;
         grid.appendChild(card);
       });
-
-      renderizarPaginacion(totalPaginas);
-      inicializarSpotlight();
       lucide.createIcons();
     }
 
-    function renderizarPaginacion(totalPaginas) {
-      const contenedor = document.getElementById("paginacion-trabajos");
-      if (!contenedor) return;
-      contenedor.innerHTML = "";
-
-      if (totalPaginas <= 1) return;
-
-      // Botón Anterior
-      const btnPrev = document.createElement("button");
-      btnPrev.disabled = paginaActual === 1;
-      btnPrev.className = `px-3 py-2 rounded-xl border text-xs font-semibold flex items-center gap-1 transition ${
-        paginaActual === 1
-          ? "bg-carbon-900/50 border-white/5 text-zinc-600 cursor-not-allowed"
-          : "bg-carbon-850 hover:bg-carbon-800 border-white/10 text-zinc-300 hover:text-white"
-      }`;
-      btnPrev.innerHTML = `<i data-lucide="chevron-left" class="w-4 h-4"></i><span>Anterior</span>`;
-      btnPrev.onclick = () => cambiarPagina(paginaActual - 1);
-      contenedor.appendChild(btnPrev);
-
-      // Números de página
-      for (let i = 1; i <= totalPaginas; i++) {
-        const btnNum = document.createElement("button");
-        const esActiva = i === paginaActual;
-        btnNum.className = `w-9 h-9 rounded-xl text-xs font-bold transition flex items-center justify-center ${
-          esActiva
-            ? "bg-brand text-white shadow-lg shadow-brand/30"
-            : "bg-carbon-850 hover:bg-carbon-800 border border-white/10 text-zinc-400 hover:text-white"
-        }`;
-        btnNum.innerText = i;
-        btnNum.onclick = () => cambiarPagina(i);
-        contenedor.appendChild(btnNum);
-      }
-
-      // Botón Siguiente
-      const btnNext = document.createElement("button");
-      btnNext.disabled = paginaActual === totalPaginas;
-      btnNext.className = `px-3 py-2 rounded-xl border text-xs font-semibold flex items-center gap-1 transition ${
-        paginaActual === totalPaginas
-          ? "bg-carbon-900/50 border-white/5 text-zinc-600 cursor-not-allowed"
-          : "bg-carbon-850 hover:bg-carbon-800 border-white/10 text-zinc-300 hover:text-white"
-      }`;
-      btnNext.innerHTML = `<span>Siguiente</span><i data-lucide="chevron-right" class="w-4 h-4"></i>`;
-      btnNext.onclick = () => cambiarPagina(paginaActual + 1);
-      contenedor.appendChild(btnNext);
-    }
-
-    function cambiarPagina(nuevaPagina) {
-      paginaActual = nuevaPagina;
-      renderizarGridFiltrado();
-      const seccionTrabajos = document.getElementById("trabajos");
-      if (seccionTrabajos) {
-        seccionTrabajos.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-
-    function abrirDetalleModal(item) {
-      document.getElementById("modal-detalle-img").src = item.imagen_url;
-      document.getElementById("modal-detalle-titulo").innerText = item.vehiculo;
-      document.getElementById("modal-detalle-desc").innerText = item.descripcion;
-
-      const fecha = item.created_at ? new Date(item.created_at).toLocaleDateString("es-AR") : "Reciente";
-      document.getElementById("modal-detalle-fecha").innerText = `Entregado: ${fecha}`;
-
-      const waBtn = document.getElementById("modal-detalle-btn-wa");
-      waBtn.href = `https://wa.me/5493804374962?text=Hola%20Taller%20Angelelli,%20vi%20el%20trabajo%20del%20${encodeURIComponent(item.vehiculo)}%20y%20quiero%20hacer%20una%20consulta`;
-
-      const modal = document.getElementById("modal-detalle-auto");
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-      lucide.createIcons();
-    }
-
-    document.getElementById("btn-cerrar-detalle").addEventListener("click", () => {
-      const modal = document.getElementById("modal-detalle-auto");
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    });
-
-    document.getElementById("input-buscar-trabajo")?.addEventListener("input", (e) => {
-      busquedaActiva = e.target.value.toLowerCase().trim();
-      paginaActual = 1;
-      renderizarGridFiltrado();
-    });
-
-    document.querySelectorAll(".chip-servicio").forEach(chip => {
-      chip.addEventListener("click", () => {
-        const textoServicio = chip.innerText.trim();
-        const textarea = document.getElementById("cliente-motivo");
-        if (textarea.value.trim() === "") {
-          textarea.value = `Consulta por: ${textoServicio}`;
-        } else {
-          textarea.value += `, ${textoServicio}`;
-        }
-        textarea.focus();
-      });
-    });
-
-    document.getElementById("form-turno").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const nombre = document.getElementById("cliente-nombre").value.trim();
-      const vehiculo = document.getElementById("cliente-vehiculo").value.trim();
-      const motivo = document.getElementById("cliente-motivo").value.trim();
-
-      const mensaje = 
-        `¡Hola Taller Angelelli! Quiero solicitar un turno para mi vehículo.\n\n` +
-        `👤 *Nombre:* ${nombre}\n` +
-        `🚗 *Vehículo:* ${vehiculo}\n` +
-        `🔧 *Problema o Arreglo:* ${motivo}\n\n` +
-        `Quedo a la espera de su respuesta para coordinar día y horario. ¡Muchas gracias!`;
-
-      mostrarToast("Abriendo WhatsApp con tu turno...", "exito");
-      window.open(`https://wa.me/5493804374962?text=${encodeURIComponent(mensaje)}`, "_blank");
-    });
-
-    document.querySelectorAll(".faq-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const content = btn.nextElementSibling;
-        const icon = btn.querySelector(".faq-icon");
-        const isOpen = !content.classList.contains("hidden");
-
-        document.querySelectorAll(".faq-content").forEach(c => c.classList.add("hidden"));
-        document.querySelectorAll(".faq-icon").forEach(i => i.classList.remove("rotate-180"));
-
-        if (!isOpen) {
-          content.classList.remove("hidden");
-          icon.classList.add("rotate-180");
-        }
-      });
-    });
-
-    function inicializarSpotlight() {
-      document.querySelectorAll(".spotlight-card").forEach(card => {
-        card.onmousemove = e => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          card.style.setProperty("--mouse-x", `${x}px`);
-          card.style.setProperty("--mouse-y", `${y}px`);
-        };
-      });
-    }
-
-    const modalAdmin = document.getElementById("modal-admin");
-    const vistaLogin = document.getElementById("vista-login-admin");
-    const vistaGestion = document.getElementById("vista-gestion-admin");
-    const formLogin = document.getElementById("form-login-admin");
-    const inputPass = document.getElementById("input-password-admin");
-    const errorPass = document.getElementById("error-password-admin");
-    const btnCancelarEdicion = document.getElementById("btn-cancelar-edicion");
-    const tituloFormAdmin = document.getElementById("titulo-form-admin");
-    const btnGuardarTrabajo = document.getElementById("btn-guardar-trabajo");
-
-    document.getElementById("btn-abrir-admin").addEventListener("click", () => {
-      modalAdmin.classList.remove("hidden");
-      modalAdmin.classList.add("flex");
-      inputPass.focus();
-    });
-
-    document.getElementById("btn-cerrar-admin").addEventListener("click", () => {
-      modalAdmin.classList.add("hidden");
-      modalAdmin.classList.remove("flex");
-    });
-
-    formLogin.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (inputPass.value === ADMIN_PASSWORD_CORRECTA) {
-        vistaLogin.classList.add("hidden");
-        vistaGestion.classList.remove("hidden");
-        errorPass.classList.add("hidden");
-        document.getElementById("admin-fecha").value = new Date().toISOString().split("T")[0];
-        cargarTrabajos();
-        mostrarToast("Bienvenido al Panel de Control", "exito");
-      } else {
-        errorPass.classList.remove("hidden");
-        inputPass.value = "";
-      }
-    });
-
-    document.getElementById("admin-foto-file").addEventListener("change", function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 1000;
-          const scaleSize = MAX_WIDTH / img.width;
-          const width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
-          const height = (img.width > MAX_WIDTH) ? (img.height * scaleSize) : img.height;
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, width, height);
-
-          imagenBase64Procesada = canvas.toDataURL("image/jpeg", 0.82);
-
-          document.getElementById("img-preview").src = imagenBase64Procesada;
-          document.getElementById("contenedor-preview").classList.remove("hidden");
-          document.getElementById("admin-foto-url").value = "";
-        };
-        img.src = event.target.result;
+    function setupEventListeners() {
+      const modalNuevo = document.getElementById("modal-nuevo-auto");
+      
+      document.getElementById("btn-open-nuevo-auto").onclick = () => {
+        resetearFormularioModal();
+        document.getElementById("modal-title-text").innerText = "Cargar Vehículo a Firebase";
+        document.getElementById("input-fecha").value = new Date().toISOString().split('T')[0];
+        modalNuevo.classList.remove("hidden");
+        modalNuevo.classList.add("flex");
       };
-      reader.readAsDataURL(file);
-    });
 
-    document.getElementById("btn-quitar-foto").addEventListener("click", () => {
-      imagenBase64Procesada = null;
-      document.getElementById("admin-foto-file").value = "";
-      document.getElementById("contenedor-preview").classList.add("hidden");
-    });
+      document.getElementById("btn-close-modal-nuevo").onclick = () => {
+        modalNuevo.classList.add("hidden");
+        modalNuevo.classList.remove("flex");
+      };
+      document.getElementById("btn-cancel-modal-nuevo").onclick = () => {
+        modalNuevo.classList.add("hidden");
+        modalNuevo.classList.remove("flex");
+      };
 
-    btnCancelarEdicion.addEventListener("click", resetearFormularioAdmin);
+      const modalDetalle = document.getElementById("modal-detalle-auto");
+      document.getElementById("btn-close-detail").onclick = () => {
+        modalDetalle.classList.add("hidden");
+        modalDetalle.classList.remove("flex");
+      };
 
-    function resetearFormularioAdmin() {
-      trabajoIdEnEdicion = null;
-      document.getElementById("form-nuevo-trabajo").reset();
-      document.getElementById("admin-fecha").value = new Date().toISOString().split("T")[0];
-      document.getElementById("btn-quitar-foto").click();
-      tituloFormAdmin.innerHTML = `<i data-lucide="plus-circle" class="w-4 h-4 text-brand"></i><span>Publicar Nuevo Trabajo</span>`;
-      btnGuardarTrabajo.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i><span>Publicar Auto en la Web</span>`;
-      btnCancelarEdicion.classList.add("hidden");
-      lucide.createIcons();
+      const inputPatente = document.getElementById("input-patente");
+      const badgeTipo = document.getElementById("badge-tipo-patente");
+
+      inputPatente.oninput = (e) => {
+        let val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (val.length <= 6) {
+          badgeTipo.innerText = "Trad.";
+        } else {
+          badgeTipo.innerText = "Merc.";
+        }
+        e.target.value = val;
+      };
+
+      document.getElementById("btn-add-item").onclick = agregarArregloTemp;
+      document.getElementById("input-item-arreglo").onkeypress = (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          agregarArregloTemp();
+        }
+      };
+
+      const dropZone = document.getElementById("drop-zone");
+      const inputFotos = document.getElementById("input-fotos");
+
+      dropZone.onclick = () => inputFotos.click();
+      inputFotos.onchange = (e) => manejarFotosUpload(e.target.files);
+
+      document.getElementById("form-nuevo-auto").onsubmit = guardarAutoFirebase;
+
+      document.getElementById("panel-search-input").oninput = filtrarAutos;
+      document.getElementById("filter-fecha-ingreso").onchange = filtrarAutos;
+
+      document.getElementById("btn-reset-filtros").onclick = () => {
+        document.getElementById("panel-search-input").value = "";
+        document.getElementById("filter-fecha-ingreso").value = "todos";
+        renderGridAutos(dbAutos);
+      };
+
+      document.getElementById("btn-eliminar-auto").onclick = async () => {
+        if (!autoSeleccionadoId) return;
+        if (confirm("¿Confirmas que deseas eliminar este registro de Firebase?")) {
+          try {
+            await deleteDoc(doc(db, "autos_taller", autoSeleccionadoId));
+            await cargarAutosDesdeFirebase();
+            modalDetalle.classList.add("hidden");
+            modalDetalle.classList.remove("flex");
+          } catch(e) {
+            console.error("Error al eliminar:", e);
+          }
+        }
+      };
+
+      document.getElementById("btn-print-ficha").onclick = () => {
+        window.print();
+      };
     }
 
-    document.getElementById("form-nuevo-trabajo").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      btnGuardarTrabajo.disabled = true;
-      btnGuardarTrabajo.innerHTML = `<span class="animate-spin mr-2">⏳</span> Guardando...`;
+    function filtrarAutos() {
+      const query = document.getElementById("panel-search-input").value.toLowerCase().trim();
+      const fechaFiltro = document.getElementById("filter-fecha-ingreso").value;
 
-      const vehiculo = document.getElementById("admin-vehiculo").value.trim();
-      const fechaInput = document.getElementById("admin-fecha").value;
-      const fechaEntregaISO = fechaInput ? new Date(fechaInput + "T12:00:00").toISOString() : new Date().toISOString();
-      const descripcion = document.getElementById("admin-descripcion").value.trim();
-      const urlInput = document.getElementById("admin-foto-url").value.trim();
-      const imagenFinal = imagenBase64Procesada || urlInput || "logo.jpg";
+      const filtrados = dbAutos.filter(a => {
+        const matchTexto = 
+          a.patente.toLowerCase().replace(/\s/g, '').includes(query.replace(/\s/g, '')) ||
+          a.cliente.toLowerCase().includes(query) ||
+          a.modelo.toLowerCase().includes(query);
 
-      try {
-        if (trabajoIdEnEdicion) {
-          const { error } = await db
-            .from(TABLA_NAME)
-            .update({ vehiculo, descripcion, imagen_url: imagenFinal, created_at: fechaEntregaISO })
-            .eq("id", trabajoIdEnEdicion);
+        const matchFecha = (fechaFiltro === "todos" || a.fecha === fechaFiltro);
 
-          if (error) throw error;
-          mostrarToast("¡Publicación editada con éxito!", "exito");
-        } else {
-          const { error } = await db.from(TABLA_NAME).insert([
-            { vehiculo, descripcion, imagen_url: imagenFinal, created_at: fechaEntregaISO }
-          ]);
+        return matchTexto && matchFecha;
+      });
 
-          if (error) throw error;
-          mostrarToast("¡Auto publicado con éxito en la web!", "exito");
-        }
+      renderGridAutos(filtrados);
+    }
 
-        resetearFormularioAdmin();
-        await cargarTrabajos();
+    function resetearFormularioModal() {
+      document.getElementById("form-nuevo-auto").reset();
+      document.getElementById("edit-auto-id").value = "";
+      tempArreglos = [];
+      tempFotosBase64 = [];
+      document.getElementById("preview-fotos").innerHTML = "";
+      renderArreglosTemp();
+    }
 
-      } catch (err) {
-        console.error("Error al guardar:", err);
-        mostrarToast("Error al guardar en Supabase", "error");
-      } finally {
-        btnGuardarTrabajo.disabled = false;
-        if (!trabajoIdEnEdicion) {
-          btnGuardarTrabajo.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i><span>Publicar Auto en la Web</span>`;
-        }
-        lucide.createIcons();
-      }
-    });
+    function manejarFotosUpload(files) {
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
 
-    function renderizarListaAdmin(trabajos) {
-      const contenedor = document.getElementById("lista-admin-trabajos");
-      if(!contenedor) return;
-      contenedor.innerHTML = "";
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
 
-      if (!trabajos || trabajos.length === 0) {
-        contenedor.innerHTML = `<p class="text-xs text-zinc-500">No hay autos cargados todavía.</p>`;
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            tempFotosBase64.push(dataUrl);
+            renderPreviewsTemp();
+          };
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderPreviewsTemp() {
+      const preview = document.getElementById("preview-fotos");
+      preview.innerHTML = "";
+      tempFotosBase64.forEach((foto) => {
+        const div = document.createElement("div");
+        div.className = "relative h-16 rounded-lg overflow-hidden border border-white/10 group";
+        div.innerHTML = `<img src="${foto}" class="w-full h-full object-cover">`;
+        preview.appendChild(div);
+      });
+    }
+
+    function agregarArregloTemp() {
+      const input = document.getElementById("input-item-arreglo");
+      const val = input.value.trim();
+      if (!val) return;
+
+      tempArreglos.push(val);
+      input.value = "";
+      renderArreglosTemp();
+    }
+
+    function renderArreglosTemp() {
+      const lista = document.getElementById("lista-arreglos-temp");
+      lista.innerHTML = "";
+
+      if (tempArreglos.length === 0) {
+        lista.innerHTML = `<li class="text-zinc-600 text-xs italic text-center py-2" id="msg-sin-items">Ningún detalle agregado aún</li>`;
         return;
       }
 
-      trabajos.forEach(t => {
-        const row = document.createElement("div");
-        row.className = "flex items-center justify-between p-2.5 rounded-xl bg-carbon-950 border border-white/5 gap-2.5";
-        row.innerHTML = `
-          <div class="flex items-center gap-2.5 overflow-hidden">
-            <img src="${t.imagen_url}" class="w-10 h-8 object-cover rounded border border-white/10 shrink-0" onerror="this.src='logo.jpg'">
-            <div class="truncate">
-              <h5 class="text-xs font-bold text-white truncate">${escapeHtml(t.vehiculo)}</h5>
-              <p class="text-[10px] text-zinc-400 truncate">${escapeHtml(t.descripcion)}</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-1.5 shrink-0">
-            <button onclick="iniciarEdicion(${t.id})" class="px-2 py-1 rounded bg-blue-500/15 text-blue-400 text-[11px] font-semibold">Editar</button>
-            <button onclick="eliminarTrabajo(${t.id})" class="px-2 py-1 rounded bg-red-500/15 text-red-400 text-[11px] font-semibold">Eliminar</button>
-          </div>
+      tempArreglos.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.className = "text-xs text-zinc-200 bg-dark-850 px-3 py-2 rounded-lg flex items-center justify-between border border-white/5";
+        li.innerHTML = `
+          <span>${item}</span>
+          <button type="button" onclick="eliminarArregloTemp(${index})" class="text-zinc-500 hover:text-brand-500">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
         `;
-        contenedor.appendChild(row);
+        lista.appendChild(li);
       });
       lucide.createIcons();
     }
 
-    window.iniciarEdicion = function(id) {
-      const item = trabajosCargadosEnMemoria.find(t => t.id === id);
-      if (!item) return;
+    window.eliminarArregloTemp = function(index) {
+      tempArreglos.splice(index, 1);
+      renderArreglosTemp();
+    }
 
-      trabajoIdEnEdicion = id;
-      document.getElementById("admin-vehiculo").value = item.vehiculo;
-      document.getElementById("admin-descripcion").value = item.descripcion;
-
-      if (item.created_at) {
-        const d = new Date(item.created_at);
-        const yyyy = d.getFullYear();
-        const mm = String(d.getMonth() + 1).padStart(2, "0");
-        const dd = String(d.getDate()).padStart(2, "0");
-        document.getElementById("admin-fecha").value = `${yyyy}-${mm}-${dd}`;
-      } else {
-        document.getElementById("admin-fecha").value = new Date().toISOString().split("T")[0];
-      }
-
-      imagenBase64Procesada = item.imagen_url;
-      document.getElementById("img-preview").src = item.imagen_url;
-      document.getElementById("contenedor-preview").classList.remove("hidden");
-      document.getElementById("admin-foto-url").value = "";
-
-      tituloFormAdmin.innerHTML = `<i data-lucide="edit" class="w-4 h-4 text-blue-400"></i><span>Editando: ${escapeHtml(item.vehiculo)}</span>`;
-      btnGuardarTrabajo.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i><span>Guardar Cambios</span>`;
-      btnCancelarEdicion.classList.remove("hidden");
-
-      vistaGestion.scrollTo({ top: 0, behavior: 'smooth' });
-      lucide.createIcons();
-    };
-
-    window.eliminarTrabajo = async function(id) {
-      if (!confirm("¿Seguro que deseas eliminar este auto de la web?")) return;
+    async function guardarAutoFirebase(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById("btn-submit-auto");
+      submitBtn.innerText = "Guardando en la nube...";
+      submitBtn.disabled = true;
 
       try {
-        const { error } = await db.from(TABLA_NAME).delete().eq("id", id);
-        if (error) throw error;
-        if (trabajoIdEnEdicion === id) resetearFormularioAdmin();
-        await cargarTrabajos();
-        mostrarToast("Auto eliminado correctamente", "exito");
-      } catch (err) {
-        console.error("Error al eliminar:", err);
-        mostrarToast("Error al eliminar", "error");
-      }
-    };
+        const rawPatente = document.getElementById("input-patente").value.toUpperCase().trim();
+        let patenteFormateada = rawPatente;
+        if (rawPatente.length === 6) {
+          patenteFormateada = `${rawPatente.substring(0,3)} ${rawPatente.substring(3,6)}`;
+        } else if (rawPatente.length === 7) {
+          patenteFormateada = `${rawPatente.substring(0,2)} ${rawPatente.substring(2,5)} ${rawPatente.substring(5,7)}`;
+        }
 
-    function escapeHtml(str) {
-      if (!str) return '';
-      return str.replace(/[&<>'"]/g, 
-        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-      );
+        const nuevoAuto = {
+          patente: patenteFormateada,
+          cliente: document.getElementById("input-cliente").value.trim(),
+          modelo: document.getElementById("input-modelo").value.trim(),
+          monto: document.getElementById("input-monto").value || null,
+          fecha: document.getElementById("input-fecha").value || new Date().toISOString().split('T')[0],
+          arreglos: tempArreglos.length > 0 ? [...tempArreglos] : ["Mantenimiento general"],
+          fotos: tempFotosBase64.length > 0 ? tempFotosBase64 : ["https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=1000&q=80"]
+        };
+
+        await addDoc(collection(db, "autos_taller"), nuevoAuto);
+        await cargarAutosDesdeFirebase();
+
+        submitBtn.innerText = "Guardar en la Nube";
+        submitBtn.disabled = false;
+        document.getElementById("modal-nuevo-auto").classList.add("hidden");
+        document.getElementById("modal-nuevo-auto").classList.remove("flex");
+        
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      } catch (err) {
+        console.error("Error detallado de Firebase:", err);
+        alert("Error al guardar en la nube: " + err.message);
+        submitBtn.innerText = "Guardar en la Nube";
+        submitBtn.disabled = false;
+      }
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("active");
-        }
-      });
-    }, { threshold: 0.1 });
+    function abrirDetalleModal(auto) {
+      autoSeleccionadoId = auto.id;
 
-    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("detail-patente-badge").innerText = auto.patente;
+      document.getElementById("detail-modelo").innerText = auto.modelo;
+      document.getElementById("detail-cliente").innerText = `Cliente / Dueño: ${auto.cliente}`;
+      document.getElementById("detail-fecha").innerText = auto.fecha;
+
+      const detailMonto = document.getElementById("detail-monto");
+      if (auto.monto) {
+        detailMonto.innerText = `$ ${Number(auto.monto).toLocaleString("es-AR")}`;
+      } else {
+        detailMonto.innerText = "";
+      }
+
+      const mainImg = document.getElementById("detail-active-img");
+      mainImg.src = auto.fotos && auto.fotos.length > 0 ? auto.fotos[0] : '';
+
+      const thumbsCont = document.getElementById("detail-thumbs");
+      thumbsCont.innerHTML = "";
+      if(auto.fotos) {
+        auto.fotos.forEach((foto, i) => {
+          const img = document.createElement("img");
+          img.src = foto;
+          img.className = `w-20 h-14 object-cover rounded-xl border-2 cursor-pointer transition-all ${i === 0 ? 'border-brand-500 scale-105' : 'border-transparent opacity-60 hover:opacity-100'}`;
+          img.onclick = () => {
+            mainImg.src = foto;
+            document.querySelectorAll("#detail-thumbs img").forEach(t => t.classList.remove('border-brand-500', 'scale-105'));
+            img.classList.add('border-brand-500', 'scale-105');
+          };
+          thumbsCont.appendChild(img);
+        });
+      }
+
+      const lista = document.getElementById("detail-lista-arreglos");
+      lista.innerHTML = "";
+      if(auto.arreglos) {
+        auto.arreglos.forEach(arr => {
+          const li = document.createElement("li");
+          li.className = "text-xs sm:text-sm text-zinc-200 flex items-start gap-2.5";
+          li.innerHTML = `
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i>
+            <span>${arr}</span>
+          `;
+          lista.appendChild(li);
+        });
+      }
+
+      const modalDetalle = document.getElementById("modal-detalle-auto");
+      modalDetalle.classList.remove("hidden");
+      modalDetalle.classList.add("flex");
       lucide.createIcons();
-      actualizarEstadoTaller();
-      setInterval(actualizarEstadoTaller, 60000);
-      inicializarSpotlight();
-      cargarTrabajos();
+    }
+
+    function initScrollReveal() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("active");
+          }
+        });
+      }, { threshold: 0.1 });
 
       document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
-    });
+    }
   </script>
 </body>
 </html>
